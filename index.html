@@ -219,8 +219,10 @@
       try {
         boot(await unlock(el('password').value));
         document.getElementById('passwordGate').classList.add('hidden');
-      } catch {
-        error.textContent = '密码错误，或页面数据暂时不可用。';
+      } catch (reason) {
+        error.textContent = reason.message === 'data-unavailable'
+          ? '页面数据尚未发布，或当前使用的是 file:// 本地文件。请使用 GitHub Pages 链接。'
+          : '密码错误，请重新输入。';
         el('password').select();
       } finally {
         button.disabled = false;
