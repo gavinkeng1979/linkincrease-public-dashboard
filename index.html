@@ -126,6 +126,7 @@
       <article class="kpi"><div class="kpi-label">待处理队列</div><div class="kpi-value" id="actionCount">—</div><div class="kpi-note">需要人工判断下一步</div></article>
       <article class="kpi"><div class="kpi-label">已建立连接</div><div class="kpi-value" id="accepted">—</div><div class="kpi-note">先对话，再介绍产品</div></article>
       <article class="kpi"><div class="kpi-label">有效对话</div><div class="kpi-value" id="qualified">—</div><div class="kpi-note">确认真实流程问题</div></article>
+      <article class="kpi"><div class="kpi-label">Messaging 联系</div><div class="kpi-value" id="messagingThreads">—</div><div class="kpi-note" id="messagingNote">已发消息 · 回复</div></article>
     </section>
 
     <section class="layout">
@@ -170,6 +171,8 @@
       el('invitesSent').textContent = m.invitesSent;
       el('accepted').textContent = m.accepted;
       el('qualified').textContent = m.qualified;
+      el('messagingThreads').textContent = m.messaging?.customerThreads ?? 0;
+      el('messagingNote').textContent = `已发 ${m.messaging?.messagesSent ?? 0} · 回复 ${m.messaging?.repliesReceived ?? 0}`;
       el('actionCount').textContent = state.data.leads.filter(needsAction).length;
       const date = new Date(state.data.meta.lastUpdatedAt);
       el('freshness').textContent = `最后更新 ${date.toLocaleString('zh-CN',{month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit'})} · ${state.data.meta.timezone}`;
