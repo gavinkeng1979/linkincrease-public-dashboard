@@ -206,7 +206,9 @@
       return JSON.parse(new TextDecoder().decode(plain));
     }
     async function unlock(password) {
-      const response = await fetch('data/tracker.enc.json', {cache:'no-store'});
+      const version = new URLSearchParams(window.location.search).get('v');
+      const dataUrl = version ? `data/tracker.enc.json?v=${encodeURIComponent(version)}` : 'data/tracker.enc.json';
+      const response = await fetch(dataUrl, {cache:'no-store'});
       if (!response.ok) throw new Error('data-unavailable');
       return decryptData(password, await response.json());
     }
