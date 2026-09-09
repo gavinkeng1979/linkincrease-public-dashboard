@@ -25,7 +25,7 @@
     .search span { position:absolute; left:13px; top:9px; font-size:17px; color:var(--muted); }
     select, .filter-button { border:1px solid var(--line); border-radius:10px; background:#fbfcfe; color:var(--ink); padding:10px 12px; }
     .filter-button.active { background:var(--blue-soft); border-color:#bfd2ff; color:var(--blue); font-weight:700; }
-    .kpis { display:grid; grid-template-columns:repeat(5, minmax(0,1fr)); gap:12px; margin-bottom:22px; }
+    .kpis { display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:12px; margin-bottom:22px; }
     .kpi { padding:17px 18px; background:var(--card); border:1px solid var(--line); border-radius:16px; box-shadow:0 8px 22px rgba(36,54,82,.05); }
     .kpi-label { color:var(--muted); font-size:12px; font-weight:700; }
     .kpi-value { margin:7px 0 3px; font-size:28px; font-weight:800; letter-spacing:-.04em; }
@@ -195,7 +195,9 @@
       const lead = state.data.leads.find(item => item.id === state.selected) || filteredLeads()[0] || state.data.leads[0];
       state.selected = lead?.id;
       if (!lead) { el('detail').innerHTML = '<div class="empty">没有匹配结果</div>'; return; }
-      el('detail').innerHTML = `<div class="panel-head"><div><div class="detail-label">Lead detail</div><h2 class="detail-name">${escapeHtml(lead.name)}</h2><div class="detail-company">${escapeHtml(lead.company)} · ${escapeHtml(lead.market)}</div><span class="stage-pill">${escapeHtml(stageLabels[lead.stage])}</span></div></div><div class="detail-body"><div class="detail-section"><div class="detail-label">Current signal</div><p>${escapeHtml(lead.trigger)}</p></div><div class="detail-section"><div class="detail-label">Conversation angle</div><p>${escapeHtml(lead.angle)}</p></div><div class="detail-section"><div class="detail-label">Next action</div><div class="next-step">${escapeHtml(lead.nextStep)}</div></div><div class="detail-section"><div class="detail-label">Activity timeline</div><ul class="timeline"><li><strong>${escapeHtml(lead.lastActivity)}</strong><br>${escapeHtml(lead.status)}</li><li>初筛阶段：匹配 ${escapeHtml(lead.persona)}</li><li>策略：围绕 supplier visibility、order milestone、QC closure 先提问，不直接推销软件</li></ul></div></div>`;
+      const contactChannel = lead.messaging ? 'LinkedIn Messaging' : 'Sales Navigator';
+      const messagingDetail = lead.messaging ? `<div class="detail-section"><div class="detail-label">Messaging assessment</div><p>${escapeHtml(lead.messaging.summary)}</p><p>${escapeHtml(lead.messaging.assessment)}</p></div>` : '';
+      el('detail').innerHTML = `<div class="panel-head"><div><div class="detail-label">Lead detail</div><h2 class="detail-name">${escapeHtml(lead.name)}</h2><div class="detail-company">${escapeHtml(lead.company)} · ${escapeHtml(lead.market)}</div><span class="stage-pill">${escapeHtml(stageLabels[lead.stage])}</span></div></div><div class="detail-body"><div class="detail-section"><div class="detail-label">Contact channel</div><p>${contactChannel}</p></div><div class="detail-section"><div class="detail-label">Current signal</div><p>${escapeHtml(lead.trigger)}</p></div><div class="detail-section"><div class="detail-label">Conversation angle</div><p>${escapeHtml(lead.angle)}</p></div>${messagingDetail}<div class="detail-section"><div class="detail-label">Next action</div><div class="next-step">${escapeHtml(lead.nextStep)}</div></div><div class="detail-section"><div class="detail-label">Activity timeline</div><ul class="timeline"><li><strong>${escapeHtml(lead.lastActivity)}</strong><br>${escapeHtml(lead.status)}</li><li>初筛阶段：匹配 ${escapeHtml(lead.persona)}</li><li>策略：围绕 supplier visibility、order milestone、QC closure 先提问，不直接推销软件</li></ul></div></div>`;
     }
     function render() { renderMetrics(); renderFocus(); renderKanban(); renderDetail(); }
     ['search','market','persona'].forEach(id => document.getElementById(id).addEventListener('input', () => { renderKanban(); renderDetail(); }));
