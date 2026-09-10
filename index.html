@@ -113,7 +113,7 @@
 
     <section class="toolbar" aria-label="筛选工具">
       <label class="search"><span>⌕</span><input id="search" type="search" placeholder="搜索姓名、公司、触发信号…" aria-label="搜索客户"></label>
-      <select id="market" aria-label="市场"><option value="all">全部市场</option><option>US</option><option>UK</option><option>AU</option><option>Europe</option></select>
+      <select id="market" aria-label="市场"><option value="all">全部市场</option><option>US</option><option>UK</option><option>AU</option><option>Europe</option><option>Asia / China</option><option>Unknown</option></select>
       <select id="persona" aria-label="角色"><option value="all">全部角色</option><option>Founder / Owner</option><option>Operations</option><option>Sourcing / Procurement</option><option>Quality</option></select>
       <button class="filter-button active" data-filter="all">全部客户</button>
       <button class="filter-button" data-filter="action">只看待行动</button>
@@ -121,11 +121,11 @@
     </section>
 
     <section class="kpis" aria-label="关键指标">
-      <article class="kpi"><div class="kpi-label">目标账户</div><div class="kpi-value" id="targetAccounts">—</div><div class="kpi-note">US / UK / AU / Europe</div></article>
+      <article class="kpi"><div class="kpi-label">目标账户</div><div class="kpi-value" id="targetAccounts">—</div><div class="kpi-note">历史105家 · 本次未逐家复核</div></article>
       <article class="kpi"><div class="kpi-label">已发邀请</div><div class="kpi-value" id="invitesSent">—</div><div class="kpi-note">小批量、触发式</div></article>
       <article class="kpi"><div class="kpi-label">待处理队列</div><div class="kpi-value" id="actionCount">—</div><div class="kpi-note">需要人工判断下一步</div></article>
       <article class="kpi"><div class="kpi-label">已建立连接</div><div class="kpi-value" id="accepted">—</div><div class="kpi-note">先对话，再介绍产品</div></article>
-      <article class="kpi"><div class="kpi-label">有效对话</div><div class="kpi-value" id="qualified">—</div><div class="kpi-note">确认真实流程问题</div></article>
+      <article class="kpi"><div class="kpi-label">有效对话</div><div class="kpi-value" id="qualified">—</div><div class="kpi-note">确认问题与下一步 · 非采购承诺</div></article>
       <article class="kpi"><div class="kpi-label">Messaging 联系</div><div class="kpi-value" id="messagingThreads">—</div><div class="kpi-note" id="messagingNote">已发消息 · 回复</div></article>
     </section>
 
@@ -147,11 +147,11 @@
   <script>
     const state = { data: null, selected: null, filter: 'all' };
     const stageLabels = { monitoring:'Monitoring', invite_sent:'Invite sent', connected:'Connected', replied:'Reply', qualified:'Qualified', demo:'Demo' };
-    const stageOrder = ['monitoring','invite_sent','connected'];
+    const stageOrder = ['qualified','replied','connected','invite_sent','monitoring','demo'];
     const el = id => document.getElementById(id);
     const escapeHtml = value => String(value ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[ch]));
-    const isRecent = lead => lead.lastActivity >= '2026-09-08';
-    const needsAction = lead => ['invite_sent','connected'].includes(lead.stage);
+    const isRecent = lead => Number.isFinite(Date.parse(lead.lastActivity)) && Date.parse(lead.lastActivity) >= Date.parse(state.data.meta.lastCheckedAt || state.data.meta.lastUpdatedAt) - 7 * 86400000;
+    const needsAction = lead => ['connected','replied','qualified','demo'].includes(lead.stage);
     function filteredLeads() {
       const search = el('search').value.trim().toLowerCase();
       const market = el('market').value;
@@ -167,15 +167,15 @@
     }
     function renderMetrics() {
       const m = state.data.metrics;
-      el('targetAccounts').textContent = m.targetAccounts;
-      el('invitesSent').textContent = m.invitesSent;
-      el('accepted').textContent = m.accepted;
-      el('qualified').textContent = m.qualified;
-      el('messagingThreads').textContent = m.messaging?.customerThreads ?? 0;
-      el('messagingNote').textContent = `已发 ${m.messaging?.messagesSent ?? 0} · 回复 ${m.messaging?.repliesReceived ?? 0}`;
+      el('targetAccounts').textContent = m.targetAccounts ?? '待核验';
+      el('invitesSent').textContent = m.invitesSent == null ? '—' : `${m.invitesSentCoverage ? '≥' : ''}${m.invitesSent}`;
+      el('accepted').textContent = m.accepted ?? '—';
+      el('qualified').textContent = m.qualified ?? '—';
+      el('messagingThreads').textContent = m.messaging?.customerThreads ?? '—';
+      el('messagingNote').textContent = `常规发出 ${m.messaging?.messagesSent ?? '—'} 条 · 收到 ${m.messaging?.repliesReceived ?? '—'} 条 / ${m.replies ?? '—'} 人`;
       el('actionCount').textContent = state.data.leads.filter(needsAction).length;
       const date = new Date(state.data.meta.lastUpdatedAt);
-      el('freshness').textContent = `最后更新 ${date.toLocaleString('zh-CN',{month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit'})} · ${state.data.meta.timezone}`;
+      el('freshness').textContent = `最后更新 ${date.toLocaleString('zh-CN',{month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit',timeZone:state.data.meta.timezone})} · ${state.data.meta.timezone}`;
       el('sourceNote').textContent = `${state.data.meta.source} · ${state.data.meta.updateNote}`;
     }
     function renderFocus() {
@@ -188,16 +188,16 @@
     function renderKanban() {
       const leads = filteredLeads();
       el('resultCount').textContent = `${leads.length} 个结果`;
-      el('kanban').innerHTML = stageOrder.map(stage => { const items = leads.filter(lead => lead.stage === stage); return `<div class="lane"><div class="lane-head"><span>${stageLabels[stage]}</span><span class="count">${items.length}</span></div>${items.length ? items.map(card).join('') : '<div class="empty">暂无客户</div>'}</div>`; }).join('');
+      el('kanban').innerHTML = stageOrder.filter(stage => leads.some(lead => lead.stage === stage)).map(stage => { const items = leads.filter(lead => lead.stage === stage); return `<div class="lane"><div class="lane-head"><span>${stageLabels[stage]}</span><span class="count">${items.length}</span></div>${items.length ? items.map(card).join('') : '<div class="empty">暂无客户</div>'}</div>`; }).join('');
       document.querySelectorAll('[data-card]').forEach(btn => btn.addEventListener('click', () => { state.selected = btn.dataset.card; renderKanban(); renderDetail(); }));
     }
     function renderDetail() {
       const lead = state.data.leads.find(item => item.id === state.selected) || filteredLeads()[0] || state.data.leads[0];
       state.selected = lead?.id;
       if (!lead) { el('detail').innerHTML = '<div class="empty">没有匹配结果</div>'; return; }
-      const contactChannel = lead.messaging ? 'LinkedIn Messaging' : 'Sales Navigator';
+      const contactChannel = escapeHtml(`邀请渠道：${lead.invitationChannel || 'Unknown'}；可见会话渠道：${lead.contactChannels?.join(' + ') || '暂无已验证会话'}；连接状态：${lead.connectionStatus || '未接触'}`);
       const messagingDetail = lead.messaging ? `<div class="detail-section"><div class="detail-label">Messaging assessment</div><p>${escapeHtml(lead.messaging.summary)}</p><p>${escapeHtml(lead.messaging.assessment)}</p></div>` : '';
-      el('detail').innerHTML = `<div class="panel-head"><div><div class="detail-label">Lead detail</div><h2 class="detail-name">${escapeHtml(lead.name)}</h2><div class="detail-company">${escapeHtml(lead.company)} · ${escapeHtml(lead.market)}</div><span class="stage-pill">${escapeHtml(stageLabels[lead.stage])}</span></div></div><div class="detail-body"><div class="detail-section"><div class="detail-label">Contact channel</div><p>${contactChannel}</p></div><div class="detail-section"><div class="detail-label">Current signal</div><p>${escapeHtml(lead.trigger)}</p></div><div class="detail-section"><div class="detail-label">Conversation angle</div><p>${escapeHtml(lead.angle)}</p></div>${messagingDetail}<div class="detail-section"><div class="detail-label">Next action</div><div class="next-step">${escapeHtml(lead.nextStep)}</div></div><div class="detail-section"><div class="detail-label">Activity timeline</div><ul class="timeline"><li><strong>${escapeHtml(lead.lastActivity)}</strong><br>${escapeHtml(lead.status)}</li><li>初筛阶段：匹配 ${escapeHtml(lead.persona)}</li><li>策略：围绕 supplier visibility、order milestone、QC closure 先提问，不直接推销软件</li></ul></div></div>`;
+      el('detail').innerHTML = `<div class="panel-head"><div><div class="detail-label">Lead detail</div><h2 class="detail-name">${escapeHtml(lead.name)}</h2><div class="detail-company">${escapeHtml(lead.company)} · ${escapeHtml(lead.market)}</div><span class="stage-pill">${escapeHtml(stageLabels[lead.stage])}</span></div></div><div class="detail-body"><div class="detail-section"><div class="detail-label">Contact channel</div><p>${contactChannel}</p></div><div class="detail-section"><div class="detail-label">Current signal</div><p>${escapeHtml(lead.trigger)}</p><p>线索观察：${escapeHtml(lead.triggerObservedAt || '历史记录，时间未核验')}</p></div><div class="detail-section"><div class="detail-label">Conversation angle</div><p>${escapeHtml(lead.angle)}</p></div>${messagingDetail}<div class="detail-section"><div class="detail-label">Next action</div><div class="next-step">${escapeHtml(lead.nextStep)}</div></div><div class="detail-section"><div class="detail-label">Activity timeline</div><ul class="timeline"><li><strong>${escapeHtml(lead.lastActivity)}</strong><br>${escapeHtml(lead.status)}</li><li>初筛阶段：匹配 ${escapeHtml(lead.persona)}</li><li>策略：围绕 supplier visibility、order milestone、QC closure 先提问，不直接推销软件</li></ul></div></div>`;
     }
     function render() { renderMetrics(); renderFocus(); renderKanban(); renderDetail(); }
     ['search','market','persona'].forEach(id => document.getElementById(id).addEventListener('input', () => { renderKanban(); renderDetail(); }));
