@@ -6,233 +6,482 @@
   <meta name="description" content="Linkincrease internal customer growth control room">
   <title>Linkincrease · Customer Growth Control Room</title>
   <style>
-    :root { --ink:#17212f; --muted:#68778b; --line:#e4eaf1; --paper:#f6f8fb; --card:#fff; --blue:#2563eb; --blue-soft:#eaf1ff; --green:#0f9f75; --green-soft:#e7f8f1; --amber:#b86b00; --amber-soft:#fff3df; --purple:#7657d9; --purple-soft:#f0ecff; --shadow:0 16px 40px rgba(36,54,82,.08); }
+    :root {
+      --ink:#172033;
+      --muted:#667085;
+      --subtle:#8b95a7;
+      --line:#e3e8ef;
+      --line-strong:#d2d9e4;
+      --paper:#f4f6f9;
+      --card:#ffffff;
+      --blue:#2859d6;
+      --blue-soft:#edf2ff;
+      --green:#0b7f5d;
+      --green-soft:#e8f7f1;
+      --amber:#a75a00;
+      --amber-soft:#fff3df;
+      --red:#b42318;
+      --red-soft:#fff0ee;
+      --purple:#6941c6;
+      --purple-soft:#f2edff;
+      --shadow:0 12px 32px rgba(23,32,51,.07);
+    }
     * { box-sizing:border-box; }
+    html { color-scheme:light; }
     body { margin:0; color:var(--ink); background:var(--paper); font-family:Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
     button, input, select { font:inherit; }
+    button, a { -webkit-tap-highlight-color:transparent; }
     button { cursor:pointer; }
-    .shell { max-width:1500px; margin:0 auto; padding:28px 34px 48px; }
-    .topbar { display:flex; justify-content:space-between; align-items:flex-start; gap:24px; margin-bottom:24px; }
-    .eyebrow { color:var(--blue); font-size:12px; font-weight:800; letter-spacing:.12em; text-transform:uppercase; }
-    h1 { margin:8px 0 6px; font-size:clamp(26px, 3vw, 38px); letter-spacing:-.035em; }
-    .subtitle { margin:0; color:var(--muted); font-size:14px; }
-    .freshness { display:flex; align-items:center; gap:10px; padding:12px 15px; background:var(--card); border:1px solid var(--line); border-radius:14px; box-shadow:0 6px 20px rgba(36,54,82,.04); color:var(--muted); font-size:12px; white-space:nowrap; }
-    .dot { width:9px; height:9px; border-radius:50%; background:var(--green); box-shadow:0 0 0 4px var(--green-soft); }
-    .toolbar { display:flex; flex-wrap:wrap; gap:10px; align-items:center; padding:13px; background:var(--card); border:1px solid var(--line); border-radius:16px; box-shadow:var(--shadow); margin-bottom:20px; }
-    .search { flex:1 1 280px; position:relative; }
-    .search input { width:100%; border:1px solid var(--line); border-radius:10px; padding:11px 13px 11px 38px; color:var(--ink); background:#fbfcfe; outline:none; }
-    .search input:focus, select:focus { border-color:#a7c1ff; box-shadow:0 0 0 3px var(--blue-soft); }
-    .search span { position:absolute; left:13px; top:9px; font-size:17px; color:var(--muted); }
-    select, .filter-button { border:1px solid var(--line); border-radius:10px; background:#fbfcfe; color:var(--ink); padding:10px 12px; }
-    .filter-button.active { background:var(--blue-soft); border-color:#bfd2ff; color:var(--blue); font-weight:700; }
-    .kpis { display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:12px; margin-bottom:22px; }
-    .kpi { padding:17px 18px; background:var(--card); border:1px solid var(--line); border-radius:16px; box-shadow:0 8px 22px rgba(36,54,82,.05); }
-    .kpi-label { color:var(--muted); font-size:12px; font-weight:700; }
-    .kpi-value { margin:7px 0 3px; font-size:28px; font-weight:800; letter-spacing:-.04em; }
-    .kpi-note { color:var(--muted); font-size:11px; }
-    .layout { display:grid; grid-template-columns:minmax(0,1.8fr) minmax(300px,.8fr); gap:20px; align-items:start; }
-    .panel { background:var(--card); border:1px solid var(--line); border-radius:18px; box-shadow:var(--shadow); overflow:hidden; }
-    .panel-head { display:flex; align-items:center; justify-content:space-between; gap:12px; padding:18px 20px; border-bottom:1px solid var(--line); }
-    .panel-title { margin:0; font-size:16px; letter-spacing:-.015em; }
-    .panel-hint { color:var(--muted); font-size:12px; }
-    .focus-list { padding:8px 14px 14px; }
-    .focus-item { display:grid; grid-template-columns:10px 1fr auto; gap:12px; align-items:start; padding:14px 6px; border-bottom:1px solid #edf1f5; }
-    .focus-item:last-child { border-bottom:0; }
-    .priority-bar { width:8px; height:38px; border-radius:8px; background:var(--blue); }
-    .priority-bar.amber { background:#e5a234; }
-    .priority-bar.green { background:var(--green); }
-    .focus-name { font-size:14px; font-weight:800; }
-    .focus-company { color:var(--muted); font-size:12px; margin-top:2px; }
-    .focus-reason { margin-top:7px; font-size:12px; line-height:1.5; color:#445266; }
-    .mini-action { border:1px solid var(--line); border-radius:8px; background:#fff; color:var(--blue); padding:7px 9px; font-size:11px; font-weight:700; }
-    .kanban { display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:12px; padding:14px; background:#fbfcfe; }
-    .lane { min-width:0; }
-    .lane-head { display:flex; justify-content:space-between; align-items:center; padding:4px 5px 10px; color:var(--muted); font-size:12px; font-weight:800; text-transform:uppercase; letter-spacing:.08em; }
-    .count { min-width:24px; padding:3px 7px; border-radius:20px; text-align:center; color:var(--blue); background:var(--blue-soft); font-size:11px; letter-spacing:0; }
-    .lead-card { width:100%; text-align:left; padding:14px; margin-bottom:10px; background:#fff; border:1px solid var(--line); border-radius:14px; transition:.15s ease; }
-    .lead-card:hover { transform:translateY(-2px); border-color:#bfd2ff; box-shadow:0 10px 25px rgba(37,99,235,.1); }
-    .lead-card.selected { border-color:var(--blue); box-shadow:0 0 0 3px var(--blue-soft); }
-    .card-top { display:flex; justify-content:space-between; gap:8px; align-items:flex-start; }
-    .card-name { font-weight:800; font-size:13px; }
-    .card-company { margin-top:3px; color:var(--muted); font-size:11px; }
-    .market { padding:4px 6px; color:var(--purple); background:var(--purple-soft); border-radius:6px; font-size:10px; font-weight:800; }
-    .card-trigger { margin:12px 0; color:#4d5b6d; font-size:11px; line-height:1.5; display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden; }
-    .tags { display:flex; flex-wrap:wrap; gap:5px; }
-    .tag { color:#526071; background:#f1f4f8; border-radius:6px; padding:4px 6px; font-size:10px; }
-    .detail { position:sticky; top:18px; }
-    .detail-body { padding:20px; }
-    .detail-label { color:var(--muted); font-size:10px; font-weight:800; letter-spacing:.1em; text-transform:uppercase; }
-    .detail-name { margin:7px 0 3px; font-size:24px; letter-spacing:-.03em; }
-    .detail-company { color:var(--muted); font-size:13px; }
-    .stage-pill { display:inline-flex; margin-top:13px; padding:7px 9px; border-radius:8px; color:var(--green); background:var(--green-soft); font-size:11px; font-weight:800; }
-    .detail-section { margin-top:22px; }
-    .detail-section h3 { margin:0 0 8px; font-size:12px; }
-    .detail-section p { margin:0; color:#4d5b6d; font-size:12px; line-height:1.65; }
-    .next-step { padding:12px; border-radius:10px; color:#4d4a30; background:#fff8e9; font-size:12px; line-height:1.55; }
-    .timeline { margin:0; padding:0 0 0 17px; border-left:2px solid #dce7ff; list-style:none; }
-    .timeline li { position:relative; margin:0 0 13px; padding-left:7px; color:#4d5b6d; font-size:11px; line-height:1.45; }
-    .timeline li::before { content:""; position:absolute; left:-24px; top:3px; width:7px; height:7px; border:3px solid #fff; border-radius:50%; background:var(--blue); box-shadow:0 0 0 1px #bfd2ff; }
-    .empty { padding:28px 14px; color:var(--muted); text-align:center; font-size:12px; }
-    .footer-note { margin-top:18px; color:var(--muted); font-size:11px; text-align:right; }
-    .password-gate { position:fixed; inset:0; z-index:10; display:grid; place-items:center; padding:24px; background:rgba(246,248,251,.97); }
+    button:focus-visible, input:focus-visible, select:focus-visible, a:focus-visible { outline:3px solid rgba(40,89,214,.24); outline-offset:2px; }
+    .shell { width:min(1480px, 100%); margin:0 auto; padding:28px 30px 44px; }
+    .topbar { display:flex; justify-content:space-between; align-items:flex-start; gap:24px; margin-bottom:18px; }
+    .eyebrow { color:var(--blue); font-size:11px; font-weight:800; letter-spacing:.13em; text-transform:uppercase; }
+    h1 { margin:7px 0 6px; font-size:clamp(27px, 3vw, 38px); line-height:1.08; letter-spacing:-.04em; }
+    .subtitle { max-width:720px; margin:0; color:var(--muted); font-size:14px; line-height:1.55; }
+    .sync-card { min-width:255px; padding:13px 15px; background:var(--card); border:1px solid var(--line); border-radius:14px; box-shadow:0 6px 20px rgba(23,32,51,.05); }
+    .sync-line { display:flex; align-items:center; gap:9px; font-size:12px; font-weight:750; }
+    .sync-detail { margin:5px 0 0 18px; color:var(--muted); font-size:11px; }
+    .status-dot { width:9px; height:9px; flex:none; border-radius:50%; background:var(--green); box-shadow:0 0 0 4px var(--green-soft); }
+    .status-dot.partial { background:#d98516; box-shadow:0 0 0 4px var(--amber-soft); }
+    .coverage-bar { display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:1px; margin-bottom:14px; overflow:hidden; background:var(--line); border:1px solid var(--line); border-radius:14px; box-shadow:0 5px 18px rgba(23,32,51,.035); }
+    .coverage-item { min-width:0; padding:12px 14px; background:var(--card); }
+    .coverage-top { display:flex; align-items:center; justify-content:space-between; gap:12px; }
+    .coverage-name { font-size:12px; font-weight:800; }
+    .coverage-time { margin-top:4px; color:var(--muted); font-size:10px; white-space:nowrap; }
+    .coverage-copy { margin-top:5px; color:var(--muted); font-size:11px; line-height:1.4; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .coverage-state { display:inline-flex; align-items:center; border-radius:999px; padding:4px 7px; font-size:10px; font-weight:800; }
+    .coverage-state.verified { color:var(--green); background:var(--green-soft); }
+    .coverage-state.partial { color:var(--amber); background:var(--amber-soft); }
+    .coverage-state.unverified { color:var(--muted); background:#eef1f5; }
+    .toolbar { display:flex; flex-wrap:wrap; gap:9px; align-items:center; padding:11px; margin-bottom:14px; background:var(--card); border:1px solid var(--line); border-radius:14px; box-shadow:var(--shadow); }
+    .search { flex:1 1 320px; }
+    .search input, select { width:100%; border:1px solid var(--line); border-radius:9px; padding:10px 11px; color:var(--ink); background:#fbfcfd; outline:none; }
+    .search input:focus, select:focus { border-color:#91acf2; background:#fff; }
+    .select-wrap { flex:0 1 190px; }
+    .view-tabs { display:flex; gap:4px; padding:4px; border:1px solid var(--line); border-radius:10px; background:#f6f8fb; }
+    .view-tab { border:0; border-radius:7px; padding:7px 10px; color:var(--muted); background:transparent; font-size:11px; font-weight:750; }
+    .view-tab.active { color:var(--blue); background:#fff; box-shadow:0 2px 8px rgba(23,32,51,.08); }
+    .kpis { display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:10px; margin-bottom:14px; }
+    .kpi { min-width:0; padding:14px 16px; background:var(--card); border:1px solid var(--line); border-radius:14px; box-shadow:0 7px 22px rgba(23,32,51,.045); }
+    .kpi-top { display:flex; justify-content:space-between; gap:12px; align-items:center; }
+    .kpi-label { color:var(--muted); font-size:11px; font-weight:750; }
+    .kpi-value { margin-top:5px; font-size:25px; line-height:1; font-weight:850; letter-spacing:-.04em; }
+    .kpi-note { margin-top:6px; color:var(--muted); font-size:10px; line-height:1.35; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .kpi-accent { width:28px; height:5px; border-radius:999px; background:var(--blue); }
+    .kpi-accent.green { background:var(--green); }
+    .kpi-accent.amber { background:#d98516; }
+    .kpi-accent.purple { background:var(--purple); }
+    .panel { background:var(--card); border:1px solid var(--line); border-radius:16px; box-shadow:var(--shadow); overflow:hidden; }
+    .panel-head { display:flex; align-items:flex-start; justify-content:space-between; gap:16px; padding:16px 18px; border-bottom:1px solid var(--line); }
+    .panel-title { margin:0; font-size:15px; letter-spacing:-.015em; }
+    .panel-hint { margin-top:4px; color:var(--muted); font-size:11px; line-height:1.45; }
+    .result-count { color:var(--muted); font-size:11px; white-space:nowrap; }
+    .funnel-panel { margin-bottom:14px; }
+    .funnel { display:grid; grid-template-columns:repeat(6, minmax(0,1fr)); padding:14px 16px 16px; }
+    .funnel-step { position:relative; min-width:0; padding:0 13px; border-right:1px solid var(--line); }
+    .funnel-step:first-child { padding-left:0; }
+    .funnel-step:last-child { padding-right:0; border-right:0; }
+    .funnel-label { color:var(--muted); font-size:10px; font-weight:750; }
+    .funnel-value { margin-top:5px; font-size:22px; font-weight:850; letter-spacing:-.035em; }
+    .funnel-track { height:5px; margin-top:9px; overflow:hidden; border-radius:999px; background:#edf0f4; }
+    .funnel-fill { height:100%; min-width:5px; border-radius:inherit; background:var(--blue); }
+    .funnel-step:nth-child(4) .funnel-fill, .funnel-step:nth-child(5) .funnel-fill { background:var(--green); }
+    .funnel-step:last-child .funnel-fill { background:var(--purple); }
+    .pipeline-panel { margin-bottom:14px; }
+    .pipeline-scroll { overflow-x:auto; overscroll-behavior-inline:contain; }
+    .pipeline-board { display:grid; grid-template-columns:repeat(4, minmax(220px,1fr)); gap:10px; min-width:940px; padding:12px; background:#fbfcfd; }
+    .pipeline-lane { min-width:0; padding:10px; border:1px solid var(--line); border-radius:12px; background:#fff; }
+    .pipeline-lane-head { display:flex; align-items:center; justify-content:space-between; gap:10px; margin-bottom:9px; }
+    .pipeline-lane-title { color:#455168; font-size:10px; font-weight:850; letter-spacing:.04em; }
+    .pipeline-count { min-width:24px; padding:4px 7px; border-radius:999px; color:var(--blue); background:var(--blue-soft); font-size:10px; font-weight:850; text-align:center; }
+    .pipeline-card { display:block; width:100%; margin-top:7px; padding:9px 10px; border:1px solid #e8ecf2; border-radius:9px; color:var(--ink); background:#fbfcfd; text-align:left; }
+    .pipeline-card:hover { border-color:#9cb5f3; background:#f7f9ff; }
+    .pipeline-card-name { display:block; font-size:11px; font-weight:800; }
+    .pipeline-card-meta { display:block; margin-top:3px; color:var(--muted); font-size:9px; line-height:1.35; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .pipeline-placeholder { min-height:74px; padding:11px; border:1px dashed var(--line-strong); border-radius:9px; color:var(--muted); background:#fbfcfd; font-size:10px; line-height:1.5; }
+    .pipeline-more { margin:8px 2px 0; color:var(--muted); font-size:9px; }
+    .layout { display:grid; grid-template-columns:minmax(0, 1.55fr) minmax(330px, .72fr); gap:14px; align-items:start; }
+    .workspace { display:grid; gap:14px; min-width:0; }
+    .action-summary { display:grid; grid-template-columns:repeat(4, minmax(0,1fr)); gap:8px; padding:12px 14px; border-bottom:1px solid var(--line); background:#fbfcfd; }
+    .action-chip { width:100%; padding:10px 11px; text-align:left; border:1px solid var(--line); border-radius:10px; color:var(--ink); background:#fff; }
+    .action-chip.active { border-color:#9cb5f3; box-shadow:0 0 0 2px var(--blue-soft); }
+    .action-chip-label { color:var(--muted); font-size:10px; }
+    .action-chip-value { margin-top:3px; font-size:18px; font-weight:850; }
+    .action-list { padding:4px 14px 8px; }
+    .action-item { display:grid; grid-template-columns:112px minmax(0,1fr) auto; gap:14px; align-items:center; padding:12px 2px; border-bottom:1px solid #edf0f4; }
+    .action-item:last-child { border-bottom:0; }
+    .action-state { display:inline-flex; width:max-content; max-width:100%; border-radius:999px; padding:5px 8px; font-size:10px; font-weight:800; }
+    .action-state.reply_now { color:var(--red); background:var(--red-soft); }
+    .action-state.follow_up { color:var(--blue); background:var(--blue-soft); }
+    .action-state.waiting_response, .action-state.waiting_acceptance { color:var(--amber); background:var(--amber-soft); }
+    .action-state.monitoring { color:var(--muted); background:#eef1f5; }
+    .action-state.demo { color:var(--purple); background:var(--purple-soft); }
+    .action-name { font-size:12px; font-weight:800; }
+    .action-meta { margin-top:3px; color:var(--muted); font-size:10px; }
+    .action-copy { margin-top:5px; color:#455168; font-size:11px; line-height:1.45; }
+    .text-button { border:1px solid var(--line); border-radius:8px; padding:7px 9px; color:var(--blue); background:#fff; font-size:10px; font-weight:800; }
+    .empty { padding:28px 16px; color:var(--muted); text-align:center; font-size:12px; }
+    .table-wrap { overflow:auto; }
+    table { width:100%; border-collapse:collapse; }
+    th { padding:10px 14px; color:var(--muted); background:#fbfcfd; border-bottom:1px solid var(--line); font-size:10px; text-align:left; font-weight:800; white-space:nowrap; }
+    td { padding:11px 14px; border-bottom:1px solid #edf0f4; color:#455168; font-size:11px; vertical-align:middle; }
+    tbody tr:last-child td { border-bottom:0; }
+    tbody tr.selected { background:#f7f9ff; }
+    .lead-button { display:block; width:100%; padding:0; border:0; color:var(--ink); background:transparent; text-align:left; font-weight:800; }
+    .lead-company { display:block; max-width:220px; margin-top:3px; color:var(--muted); font-size:10px; font-weight:500; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .stage-pill, .channel-pill, .market-pill { display:inline-flex; align-items:center; border-radius:999px; padding:5px 8px; font-size:9px; font-weight:800; white-space:nowrap; }
+    .stage-pill { color:var(--blue); background:var(--blue-soft); }
+    .stage-pill.connected, .stage-pill.qualified, .stage-pill.replied { color:var(--green); background:var(--green-soft); }
+    .stage-pill.monitoring { color:var(--muted); background:#eef1f5; }
+    .stage-pill.demo { color:var(--purple); background:var(--purple-soft); }
+    .channel-pill { color:#40516d; background:#eef2f7; }
+    .market-pill { color:var(--purple); background:var(--purple-soft); }
+    .next-cell { max-width:310px; line-height:1.45; }
+    .detail { position:sticky; top:14px; max-height:calc(100vh - 28px); overflow:auto; }
+    .detail-head { padding:18px; border-bottom:1px solid var(--line); }
+    .detail-kicker { color:var(--muted); font-size:10px; font-weight:800; letter-spacing:.1em; text-transform:uppercase; }
+    .detail-name { margin:7px 0 3px; font-size:23px; letter-spacing:-.03em; }
+    .detail-company { color:var(--muted); font-size:11px; line-height:1.45; }
+    .detail-badges { display:flex; flex-wrap:wrap; gap:6px; margin-top:12px; }
+    .profile-link { display:inline-flex; margin-top:13px; color:var(--blue); font-size:11px; font-weight:800; text-decoration:none; }
+    .profile-link:hover { text-decoration:underline; }
+    .detail-body { padding:4px 18px 20px; }
+    .detail-section { padding:16px 0; border-bottom:1px solid #edf0f4; }
+    .detail-section:last-child { border-bottom:0; }
+    .detail-label { margin-bottom:8px; color:var(--muted); font-size:10px; font-weight:800; letter-spacing:.09em; text-transform:uppercase; }
+    .detail-section p { margin:0; color:#455168; font-size:11px; line-height:1.65; }
+    .detail-section p + p { margin-top:7px; }
+    .channel-grid { display:grid; grid-template-columns:repeat(2, minmax(0,1fr)); gap:8px; }
+    .channel-card { min-width:0; padding:10px; border:1px solid var(--line); border-radius:10px; background:#fbfcfd; }
+    .channel-card-label { color:var(--muted); font-size:9px; font-weight:750; }
+    .channel-card-value { margin-top:5px; color:var(--ink); font-size:11px; font-weight:800; line-height:1.35; overflow-wrap:anywhere; }
+    .next-step { padding:12px; border:1px solid #f4d6a6; border-radius:10px; color:#5a431f; background:#fff9ed; font-size:11px; line-height:1.55; }
+    .assessment { padding:12px; border-left:3px solid var(--green); border-radius:0 9px 9px 0; background:#f3faf7; }
+    .timeline { margin:0; padding:0; list-style:none; }
+    .timeline li { position:relative; padding:0 0 14px 17px; color:#455168; font-size:10px; line-height:1.55; border-left:1px solid #d9e1ef; }
+    .timeline li:last-child { padding-bottom:0; border-left-color:transparent; }
+    .timeline li::before { content:""; position:absolute; left:-4px; top:4px; width:7px; height:7px; border-radius:50%; background:var(--blue); }
+    .timeline-time { display:block; margin-bottom:3px; color:var(--muted); font-size:9px; font-weight:750; }
+    .footer-note { margin-top:16px; color:var(--muted); font-size:10px; line-height:1.5; text-align:right; }
+    @media (max-width:1050px) {
+      .layout { grid-template-columns:1fr; }
+      .detail { position:static; max-height:none; }
+      .funnel { grid-template-columns:repeat(3,1fr); gap:14px 0; }
+      .funnel-step:nth-child(3) { border-right:0; }
+    }
+    @media (max-width:760px) {
+      .shell { padding:20px 14px 34px; }
+      .topbar { display:block; }
+      .sync-card { width:100%; margin-top:14px; }
+      .coverage-bar { grid-template-columns:1fr; }
+      .coverage-copy { white-space:normal; }
+      .kpis { grid-template-columns:repeat(2, minmax(0,1fr)); }
+      .funnel { grid-template-columns:repeat(2,1fr); }
+      .funnel-step:nth-child(3) { border-right:1px solid var(--line); }
+      .funnel-step:nth-child(even) { border-right:0; }
+      .action-summary { grid-template-columns:repeat(2,1fr); }
+      .action-item { grid-template-columns:1fr auto; }
+      .action-state { grid-column:1 / -1; }
+      .select-wrap { flex:1 1 145px; }
+      .view-tabs { width:100%; }
+      .view-tab { flex:1; }
+      .hide-mobile { display:none; }
+      .channel-grid { grid-template-columns:1fr; }
+    }
+
+    body.locked { overflow:hidden; }
+    body.locked .shell { visibility:hidden; }
+    .password-gate { position:fixed; inset:0; z-index:20; display:grid; place-items:center; padding:24px; background:rgba(244,246,249,.98); }
     .password-gate.hidden { display:none; }
-    .password-card { width:min(420px,100%); padding:28px; background:var(--card); border:1px solid var(--line); border-radius:18px; box-shadow:var(--shadow); }
-    .password-card h1 { margin:8px 0; font-size:26px; }
-    .password-card p { color:var(--muted); font-size:13px; line-height:1.6; }
+    .password-card { width:min(430px,100%); padding:28px; background:var(--card); border:1px solid var(--line); border-radius:18px; box-shadow:var(--shadow); }
+    .password-card h2 { margin:8px 0; font-size:26px; letter-spacing:-.03em; }
+    .password-card p { margin:0; color:var(--muted); font-size:13px; line-height:1.6; }
     .password-form { display:flex; gap:8px; margin-top:18px; }
-    .password-form input { min-width:0; flex:1; border:1px solid var(--line); border-radius:10px; padding:11px 12px; outline:none; }
-    .password-form input:focus { border-color:#a7c1ff; box-shadow:0 0 0 3px var(--blue-soft); }
-    .password-form button { border:0; border-radius:10px; padding:11px 15px; color:#fff; background:var(--blue); font-weight:800; }
-    .password-error { min-height:18px; margin:10px 0 0; color:#b42318; font-size:12px; }
-    @media (max-width:1100px) { .kpis { grid-template-columns:repeat(3,1fr); } .layout { grid-template-columns:1fr; } .detail { position:static; } }
-    @media (max-width:720px) { .shell { padding:20px 14px 36px; } .topbar { display:block; } .freshness { margin-top:16px; width:max-content; } .kpis { grid-template-columns:repeat(2,1fr); } .kanban { grid-template-columns:1fr; } }
+    .password-form input { min-width:0; flex:1; border:1px solid var(--line); border-radius:9px; padding:11px 12px; outline:none; }
+    .password-form button { border:0; border-radius:9px; padding:11px 15px; color:#fff; background:var(--blue); font-weight:800; }
+    .password-error { min-height:18px; margin:10px 0 0; color:var(--red); font-size:12px; }
   </style>
 </head>
-<body>
+<body class="locked">
   <section class="password-gate" id="passwordGate" aria-label="访问验证">
     <div class="password-card">
-      <div class="eyebrow">Linkincrease · Protected view</div>
-      <h1>输入访问密码</h1>
-      <p>这是内部客户跟踪面板。数据以加密形式存放，验证成功后只在当前浏览器中解密。</p>
+      <div class="eyebrow">Linkincrease · Private customer data</div>
+      <h2>输入访问密码</h2>
+      <p>此页面仅供获授权的公司同事查看。数据会在浏览器中解密，不会以明文存放在公开仓库。</p>
       <form class="password-form" id="passwordForm">
         <input id="password" type="password" autocomplete="current-password" placeholder="访问密码" aria-label="访问密码" required>
-        <button type="submit">进入</button>
+        <button type="submit">查看面板</button>
       </form>
       <div class="password-error" id="passwordError" role="alert"></div>
     </div>
   </section>
+
   <main class="shell">
     <header class="topbar">
       <div>
         <div class="eyebrow">Linkincrease · Internal workspace</div>
         <h1>Customer Growth Control Room</h1>
-        <p class="subtitle">把“谁值得现在联系”放在第一屏，把下一步动作变成可执行队列。</p>
+        <p class="subtitle">把名单规模、关系进展和下一步动作分开呈现，让团队先处理最值得行动的 LinkedIn 线索。</p>
       </div>
-      <div class="freshness"><span class="dot"></span><span id="freshness">数据更新中…</span></div>
+      <div class="sync-card" aria-live="polite">
+        <div class="sync-line"><span class="status-dot partial" id="syncDot"></span><span id="freshness">数据更新中…</span></div>
+        <div class="sync-detail" id="syncDetail">正在读取渠道核查状态</div>
+      </div>
     </header>
-
-    <section class="toolbar" aria-label="筛选工具">
-      <label class="search"><span>⌕</span><input id="search" type="search" placeholder="搜索姓名、公司、触发信号…" aria-label="搜索客户"></label>
-      <select id="market" aria-label="市场"><option value="all">全部市场</option><option>US</option><option>UK</option><option>AU</option><option>Europe</option><option>Asia / China</option><option>Unknown</option></select>
-      <select id="persona" aria-label="角色"><option value="all">全部角色</option><option>Founder / Owner</option><option>Operations</option><option>Sourcing / Procurement</option><option>Quality</option></select>
-      <button class="filter-button active" data-filter="all">全部客户</button>
-      <button class="filter-button" data-filter="action">只看待行动</button>
-      <button class="filter-button" data-filter="active">只看近期活跃</button>
+    <section class="coverage-bar" id="coverageBar" aria-label="数据核查范围"></section>
+    <section class="toolbar" aria-label="线索筛选">
+      <label class="search"><input id="search" type="search" placeholder="搜索姓名、公司、角色或触发信号" aria-label="搜索线索"></label>
+      <label class="select-wrap"><select id="market" aria-label="按市场筛选"><option value="all">全部市场</option><option value="US">美国</option><option value="UK">英国</option><option value="AU">澳大利亚</option><option value="Europe">欧洲</option><option value="Asia">亚洲</option><option value="Unknown">待核验</option></select></label>
+      <label class="select-wrap"><select id="persona" aria-label="按角色筛选"><option value="all">全部角色</option><option value="Founder / Owner">Founder / Owner</option><option value="Operations">Operations</option><option value="Sourcing / Procurement">Sourcing / Procurement</option><option value="Quality">Quality</option></select></label>
+      <div class="view-tabs" role="group" aria-label="行动状态">
+        <button class="view-tab active" data-filter="action" aria-pressed="true">需处理</button>
+        <button class="view-tab" data-filter="waiting" aria-pressed="false">等待中</button>
+        <button class="view-tab" data-filter="monitoring" aria-pressed="false">观察中</button>
+        <button class="view-tab" data-filter="all" aria-pressed="false">全部</button>
+      </div>
     </section>
-
     <section class="kpis" aria-label="关键指标">
-      <article class="kpi"><div class="kpi-label">目标账户</div><div class="kpi-value" id="targetAccounts">—</div><div class="kpi-note">历史105家 · 本次未逐家复核</div></article>
-      <article class="kpi"><div class="kpi-label">已发邀请</div><div class="kpi-value" id="invitesSent">—</div><div class="kpi-note">小批量、触发式</div></article>
-      <article class="kpi"><div class="kpi-label">待处理队列</div><div class="kpi-value" id="actionCount">—</div><div class="kpi-note">需要人工判断下一步</div></article>
-      <article class="kpi"><div class="kpi-label">已建立连接</div><div class="kpi-value" id="accepted">—</div><div class="kpi-note">先对话，再介绍产品</div></article>
-      <article class="kpi"><div class="kpi-label">有效对话</div><div class="kpi-value" id="qualified">—</div><div class="kpi-note">确认问题与下一步 · 非采购承诺</div></article>
-      <article class="kpi"><div class="kpi-label">Messaging 联系</div><div class="kpi-value" id="messagingThreads">—</div><div class="kpi-note" id="messagingNote">已发消息 · 回复</div></article>
+      <article class="kpi"><div class="kpi-top"><div class="kpi-label">待首轮接触</div><span class="kpi-accent"></span></div><div class="kpi-value" id="readyToContact">—</div><div class="kpi-note">Sales Navigator 行动名单</div></article>
+      <article class="kpi"><div class="kpi-top"><div class="kpi-label">已联系对象</div><span class="kpi-accent purple"></span></div><div class="kpi-value" id="contactedPeople">—</div><div class="kpi-note">去重后的当前跟进名单</div></article>
+      <article class="kpi"><div class="kpi-top"><div class="kpi-label">邀请待接受</div><span class="kpi-accent amber"></span></div><div class="kpi-value" id="pending">—</div><div class="kpi-note">等待，不重复发送邀请</div></article>
+      <article class="kpi"><div class="kpi-top"><div class="kpi-label">已建立连接</div><span class="kpi-accent green"></span></div><div class="kpi-value" id="accepted">—</div><div class="kpi-note" id="acceptRateNote">按已验证邀请计算</div></article>
+      <article class="kpi"><div class="kpi-top"><div class="kpi-label">已回复联系人</div><span class="kpi-accent green"></span></div><div class="kpi-value" id="replies">—</div><div class="kpi-note">Messaging 最近完整核查结果</div></article>
+      <article class="kpi"><div class="kpi-top"><div class="kpi-label">有效问题对话</div><span class="kpi-accent green"></span></div><div class="kpi-value" id="qualified">—</div><div class="kpi-note">不等于采购意向或销售合格</div></article>
     </section>
-
+    <section class="panel funnel-panel" aria-label="关系漏斗">
+      <div class="panel-head"><div><h2 class="panel-title">关系进展</h2><div class="panel-hint">把名单管理与对话转化分开，避免把“已保存”误认为“已进入销售流程”。</div></div><span class="result-count" id="poolSummary"></span></div>
+      <div class="funnel" id="funnel"></div>
+    </section>
+    <section class="panel pipeline-panel" aria-label="Pipeline 看板">
+      <div class="panel-head"><div><h2 class="panel-title">Pipeline 看板</h2><div class="panel-hint">四个阶段始终横向并列；屏幕较窄时左右滚动查看，不改变列顺序。</div></div><span class="result-count">4 个阶段</span></div>
+      <div class="pipeline-scroll"><div class="pipeline-board" id="pipelineBoard"></div></div>
+    </section>
     <section class="layout">
-      <div>
-        <section class="panel" style="margin-bottom:20px">
-          <div class="panel-head"><div><h2 class="panel-title">今日优先队列</h2><div class="panel-hint">优先看近期活跃、已连接或刚发出邀请的客户</div></div><span class="panel-hint" id="focusCount"></span></div>
-          <div class="focus-list" id="focusList"></div>
+      <div class="workspace">
+        <section class="panel" aria-label="行动队列">
+          <div class="panel-head"><div><h2 class="panel-title">行动队列</h2><div class="panel-hint">需要回复和可准备跟进的对象优先；发送任何对外内容前仍需用户确认。</div></div><span class="result-count" id="actionResultCount"></span></div>
+          <div class="action-summary" id="actionSummary"></div>
+          <div class="action-list" id="actionList"></div>
         </section>
-        <section class="panel">
-          <div class="panel-head"><div><h2 class="panel-title">Pipeline 看板</h2><div class="panel-hint">点击卡片查看触发信号、沟通角度和下一步</div></div><span class="panel-hint" id="resultCount"></span></div>
-          <div class="kanban" id="kanban"></div>
+        <section class="panel" aria-label="线索清单">
+          <div class="panel-head"><div><h2 class="panel-title">线索清单</h2><div class="panel-hint">统一查看关系状态、沟通渠道、下一步和最近活动。</div></div><span class="result-count" id="resultCount"></span></div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>线索</th><th>关系状态</th><th>渠道</th><th class="hide-mobile">下一步</th><th class="hide-mobile">最近活动</th></tr></thead>
+              <tbody id="leadTable"></tbody>
+            </table>
+          </div>
         </section>
       </div>
-      <aside class="panel detail" id="detail"></aside>
+      <aside class="panel detail" id="detail" aria-label="线索详情"></aside>
     </section>
     <div class="footer-note" id="sourceNote"></div>
   </main>
+  <script>window.PUBLIC_DASHBOARD_ENCRYPTED = true;</script>
   <script>
-    const state = { data: null, selected: null, filter: 'all' };
-    const stageLabels = { monitoring:'Monitoring', invite_sent:'Invite sent', connected:'Connected', replied:'Reply', qualified:'Qualified', demo:'Demo' };
-    const stageOrder = ['qualified','replied','connected','invite_sent','monitoring','demo'];
+    const state = { data:null, selected:null, filter:'action', actionFilter:'all' };
+    const stageLabels = { monitoring:'观察中', invite_sent:'邀请待接受', connected:'已连接', replied:'已回复', qualified:'有效问题对话', demo:'Demo' };
+    const actionLabels = { reply_now:'需要回复', follow_up:'准备跟进', demo:'推进 Demo', waiting_response:'等待回复', waiting_acceptance:'等待接受', monitoring:'继续观察' };
+    const actionRank = { reply_now:0, follow_up:1, demo:2, waiting_response:3, waiting_acceptance:4, monitoring:5 };
     const el = id => document.getElementById(id);
-    const escapeHtml = value => String(value ?? '').replace(/[&<>"']/g, ch => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[ch]));
-    const isRecent = lead => Number.isFinite(Date.parse(lead.lastActivity)) && Date.parse(lead.lastActivity) >= Date.parse(state.data.meta.lastCheckedAt || state.data.meta.lastUpdatedAt) - 7 * 86400000;
-    const needsAction = lead => ['connected','replied','qualified','demo'].includes(lead.stage);
-    function filteredLeads() {
-      const search = el('search').value.trim().toLowerCase();
+    const escapeHtml = value => String(value ?? '').replace(/[&<>"']/g, character => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#039;'}[character]));
+    const formatDate = value => {
+      if (!value || !Number.isFinite(Date.parse(value))) return '未核验';
+      const hasTime = String(value).includes('T');
+      return new Date(value).toLocaleString('zh-CN', { month:'numeric', day:'numeric', hour:hasTime ? '2-digit' : undefined, minute:hasTime ? '2-digit' : undefined, timeZone:state.data?.meta?.timezone || 'Asia/Shanghai' });
+    };
+    const marketGroup = market => market?.startsWith('Asia') ? 'Asia' : market;
+    const leadEvents = lead => (state.data.events || []).filter(event => event.leadId === lead.id).sort((first, second) => Date.parse(second.eventAt) - Date.parse(first.eventAt));
+    const actionState = lead => {
+      if (lead.stage === 'demo') return 'demo';
+      const inbound = Date.parse(lead.messaging?.lastInboundAt || 0);
+      const outbound = Date.parse(lead.messaging?.lastOutboundAt || 0);
+      if (inbound > outbound) return 'reply_now';
+      if (['qualified','replied'].includes(lead.stage)) return 'waiting_response';
+      if (lead.stage === 'connected') return 'follow_up';
+      if (lead.stage === 'invite_sent') return 'waiting_acceptance';
+      return 'monitoring';
+    };
+    const channelLabel = lead => {
+      if (lead.contactChannels?.length) return lead.contactChannels.join(' + ');
+      if (lead.invitationChannel && lead.invitationChannel !== 'Unknown') return `${lead.invitationChannel} 邀请`;
+      return '尚无已验证会话';
+    };
+    const matchesMainFilter = lead => {
+      const action = actionState(lead);
+      if (state.filter === 'action') return ['reply_now','follow_up','demo'].includes(action);
+      if (state.filter === 'waiting') return ['waiting_response','waiting_acceptance'].includes(action);
+      if (state.filter === 'monitoring') return action === 'monitoring';
+      return true;
+    };
+    function matchesInputs(lead) {
+      const query = el('search').value.trim().toLowerCase();
       const market = el('market').value;
       const persona = el('persona').value;
-      return state.data.leads.filter(lead => {
-        const haystack = [lead.name, lead.company, lead.trigger, lead.angle, lead.persona, ...lead.signals].join(' ').toLowerCase();
-        const matchesSearch = !search || haystack.includes(search);
-        const matchesMarket = market === 'all' || lead.market === market;
-        const matchesPersona = persona === 'all' || lead.persona.includes(persona);
-        const matchesFilter = state.filter === 'all' || (state.filter === 'action' && needsAction(lead)) || (state.filter === 'active' && isRecent(lead));
-        return matchesSearch && matchesMarket && matchesPersona && matchesFilter;
-      });
+      const haystack = [lead.name, lead.company, lead.trigger, lead.angle, lead.persona, lead.status, ...(lead.signals || [])].join(' ').toLowerCase();
+      return (!query || haystack.includes(query)) && (market === 'all' || marketGroup(lead.market) === market) && (persona === 'all' || lead.persona.includes(persona));
+    }
+    function filteredLeads() {
+      return state.data.leads.filter(lead => matchesInputs(lead) && matchesMainFilter(lead)).sort((first, second) => actionRank[actionState(first)] - actionRank[actionState(second)] || Date.parse(second.lastActivity) - Date.parse(first.lastActivity));
+    }
+    function renderCoverage() {
+      const checks = state.data.meta.channelChecks || {};
+      const statusLabels = { verified:'已核验', partial:'需复核', unverified:'未核验' };
+      el('coverageBar').innerHTML = Object.values(checks).map(check => `<article class="coverage-item"><div class="coverage-top"><span class="coverage-name">${escapeHtml(check.label)}</span><span class="coverage-state ${escapeHtml(check.status)}">${escapeHtml(statusLabels[check.status] || check.status)}</span></div><div class="coverage-copy" title="${escapeHtml(check.coverage)}">${escapeHtml(check.coverage)}</div><div class="coverage-time">${check.checkedAt ? `核查于 ${formatDate(check.checkedAt)}` : '暂无当前核查时间'}</div></article>`).join('');
     }
     function renderMetrics() {
-      const m = state.data.metrics;
-      el('targetAccounts').textContent = m.targetAccounts ?? '待核验';
-      el('invitesSent').textContent = m.invitesSent == null ? '—' : `${m.invitesSentCoverage ? '≥' : ''}${m.invitesSent}`;
-      el('accepted').textContent = m.accepted ?? '—';
-      el('qualified').textContent = m.qualified ?? '—';
-      el('messagingThreads').textContent = m.messaging?.customerThreads ?? '—';
-      el('messagingNote').textContent = `常规发出 ${m.messaging?.messagesSent ?? '—'} 条 · 收到 ${m.messaging?.repliesReceived ?? '—'} 条 / ${m.replies ?? '—'} 人`;
-      el('actionCount').textContent = state.data.leads.filter(needsAction).length;
-      const date = new Date(state.data.meta.lastUpdatedAt);
-      el('freshness').textContent = `最后更新 ${date.toLocaleString('zh-CN',{month:'numeric',day:'numeric',hour:'2-digit',minute:'2-digit',timeZone:state.data.meta.timezone})} · ${state.data.meta.timezone}`;
+      const metrics = state.data.metrics;
+      const listMetrics = metrics.salesNavigatorLists || {};
+      el('readyToContact').textContent = listMetrics.readyToContact ?? '—';
+      el('contactedPeople').textContent = metrics.contactedPeople ?? '—';
+      el('pending').textContent = metrics.pending ?? '—';
+      el('accepted').textContent = metrics.accepted ?? '—';
+      el('replies').textContent = metrics.replies ?? '—';
+      el('qualified').textContent = metrics.qualified ?? '—';
+      el('acceptRateNote').textContent = metrics.rates?.acceptRate == null ? '分母尚未完整核验' : `邀请接受率 ${(metrics.rates.acceptRate * 100).toFixed(1)}%`;
+      el('poolSummary').textContent = `已保存 ${metrics.savedLeads ?? '—'} 人 · 行动名单 ${listMetrics.readyToContact ?? '—'} 人`;
+      el('freshness').textContent = `更新于 ${formatDate(state.data.meta.lastUpdatedAt)}`;
+      const checks = state.data.meta.channelChecks || {};
+      const primaryChannelsVerified = checks.salesNavigator?.status === 'verified' && checks.linkedinMessaging?.status === 'verified';
+      el('syncDetail').textContent = primaryChannelsVerified ? 'Sales Navigator 与 LinkedIn Messaging 均已核查' : '部分渠道仍需复核';
+      el('syncDot').classList.toggle('partial', !primaryChannelsVerified);
       el('sourceNote').textContent = `${state.data.meta.source} · ${state.data.meta.updateNote}`;
     }
-    function renderFocus() {
-      const focus = [...state.data.leads].filter(lead => needsAction(lead)).sort((a,b) => (a.priority==='Now'?0:1)-(b.priority==='Now'?0:1) || b.lastActivity.localeCompare(a.lastActivity)).slice(0,4);
-      el('focusCount').textContent = `${focus.length} 个建议优先处理`;
-      el('focusList').innerHTML = focus.map(lead => `<div class="focus-item"><span class="priority-bar ${lead.stage==='connected'?'green':lead.priority==='Soon'?'amber':''}"></span><div><div class="focus-name">${escapeHtml(lead.name)}</div><div class="focus-company">${escapeHtml(lead.company)} · ${escapeHtml(lead.market)}</div><div class="focus-reason">${escapeHtml(lead.nextStep)}</div></div><button class="mini-action" data-select="${lead.id}">查看</button></div>`).join('');
-      document.querySelectorAll('[data-select]').forEach(btn => btn.addEventListener('click', () => { state.selected = btn.dataset.select; renderDetail(); document.querySelector(`[data-card="${state.selected}"]`)?.scrollIntoView({behavior:'smooth',block:'nearest'}); }));
+    function renderFunnel() {
+      const metrics = state.data.metrics;
+      const steps = [
+        ['已联系', metrics.contactedPeople || 0],
+        ['邀请待接受', metrics.pending || 0],
+        ['已连接', metrics.accepted || 0],
+        ['已回复', metrics.replies || 0],
+        ['有效问题对话', metrics.qualified || 0],
+        ['Demo', metrics.demo?.booked || metrics.demos || 0]
+      ];
+      const maximum = Math.max(1, metrics.contactedPeople || 0);
+      el('funnel').innerHTML = steps.map(([label, value]) => `<article class="funnel-step"><div class="funnel-label">${escapeHtml(label)}</div><div class="funnel-value">${value}</div><div class="funnel-track" aria-hidden="true"><div class="funnel-fill" style="width:${Math.max(value ? 8 : 0, value / maximum * 100)}%"></div></div></article>`).join('');
     }
-    function card(lead) { return `<button class="lead-card ${state.selected===lead.id?'selected':''}" data-card="${lead.id}"><div class="card-top"><div><div class="card-name">${escapeHtml(lead.name)}</div><div class="card-company">${escapeHtml(lead.company)}</div></div><span class="market">${escapeHtml(lead.market)}</span></div><div class="card-trigger">${escapeHtml(lead.trigger)}</div><div class="tags">${lead.signals.slice(0,3).map(s=>`<span class="tag">${escapeHtml(s)}</span>`).join('')}</div></button>`; }
-    function renderKanban() {
+    function renderPipeline() {
+      const matching = state.data.leads.filter(matchesInputs).sort((first, second) => Date.parse(second.lastActivity) - Date.parse(first.lastActivity));
+      const listMetrics = state.data.metrics.salesNavigatorLists || {};
+      const lanes = [
+        { label:'待首轮接触', count:listMetrics.readyToContact ?? 0, aggregate:true, note:'名单级统计。13位候选人的逐条档案保留在 Sales Navigator「01 Action - Ready to Contact」。' },
+        { label:'邀请待接受', items:matching.filter(lead => lead.stage === 'invite_sent') },
+        { label:'已连接', items:matching.filter(lead => lead.stage === 'connected') },
+        { label:'有效问题对话', items:matching.filter(lead => ['replied','qualified','demo'].includes(lead.stage)) }
+      ];
+      el('pipelineBoard').innerHTML = lanes.map(lane => {
+        const items = lane.items || [];
+        const count = lane.aggregate ? lane.count : items.length;
+        const cards = lane.aggregate
+          ? `<div class="pipeline-placeholder">${escapeHtml(lane.note)}</div>`
+          : items.slice(0, 4).map(lead => `<button class="pipeline-card" data-pipeline-lead="${escapeHtml(lead.id)}"><span class="pipeline-card-name">${escapeHtml(lead.name)}</span><span class="pipeline-card-meta">${escapeHtml(lead.company)} · ${escapeHtml(channelLabel(lead))}</span></button>`).join('') || '<div class="pipeline-placeholder">当前筛选下暂无对象。</div>';
+        const more = !lane.aggregate && items.length > 4 ? `<div class="pipeline-more">另有 ${items.length - 4} 人，可在下方“线索清单”查看。</div>` : '';
+        return `<section class="pipeline-lane"><div class="pipeline-lane-head"><span class="pipeline-lane-title">${escapeHtml(lane.label)}</span><span class="pipeline-count">${count}</span></div>${cards}${more}</section>`;
+      }).join('');
+      document.querySelectorAll('[data-pipeline-lead]').forEach(button => button.addEventListener('click', () => selectLead(button.dataset.pipelineLead)));
+    }
+    function renderActionSummary() {
+      const counts = state.data.leads.reduce((result, lead) => { result[actionState(lead)] = (result[actionState(lead)] || 0) + 1; return result; }, {});
+      const groups = [
+        ['all', '当前筛选', filteredLeads().length],
+        ['reply_now', '需要回复', counts.reply_now || 0],
+        ['follow_up', '准备跟进', counts.follow_up || 0],
+        ['waiting', '等待中', (counts.waiting_response || 0) + (counts.waiting_acceptance || 0)]
+      ];
+      el('actionSummary').innerHTML = groups.map(([key, label, value]) => `<button class="action-chip ${state.actionFilter === key ? 'active' : ''}" data-action-filter="${key}"><div class="action-chip-label">${escapeHtml(label)}</div><div class="action-chip-value">${value}</div></button>`).join('');
+      document.querySelectorAll('[data-action-filter]').forEach(button => button.addEventListener('click', () => { state.actionFilter = button.dataset.actionFilter; renderActionSummary(); renderActionList(); }));
+    }
+    function actionFilteredLeads() {
+      const leads = filteredLeads();
+      if (state.actionFilter === 'all') return leads;
+      if (state.actionFilter === 'waiting') return leads.filter(lead => ['waiting_response','waiting_acceptance'].includes(actionState(lead)));
+      return leads.filter(lead => actionState(lead) === state.actionFilter);
+    }
+    function renderActionList() {
+      const allLeads = actionFilteredLeads();
+      const leads = allLeads.slice(0, 6);
+      el('actionResultCount').textContent = `${allLeads.length} 个对象`;
+      el('actionList').innerHTML = leads.length ? leads.map(lead => `<div class="action-item"><span class="action-state ${actionState(lead)}">${escapeHtml(actionLabels[actionState(lead)])}</span><div><div class="action-name">${escapeHtml(lead.name)}</div><div class="action-meta">${escapeHtml(lead.company)} · ${escapeHtml(lead.market)}</div><div class="action-copy">${escapeHtml(lead.nextStep)}</div></div><button class="text-button" data-select="${escapeHtml(lead.id)}">查看详情</button></div>`).join('') : '<div class="empty">当前筛选下没有需要处理的线索。</div>';
+      document.querySelectorAll('[data-select]').forEach(button => button.addEventListener('click', () => selectLead(button.dataset.select)));
+    }
+    function renderTable() {
       const leads = filteredLeads();
       el('resultCount').textContent = `${leads.length} 个结果`;
-      el('kanban').innerHTML = stageOrder.filter(stage => leads.some(lead => lead.stage === stage)).map(stage => { const items = leads.filter(lead => lead.stage === stage); return `<div class="lane"><div class="lane-head"><span>${stageLabels[stage]}</span><span class="count">${items.length}</span></div>${items.length ? items.map(card).join('') : '<div class="empty">暂无客户</div>'}</div>`; }).join('');
-      document.querySelectorAll('[data-card]').forEach(btn => btn.addEventListener('click', () => { state.selected = btn.dataset.card; renderKanban(); renderDetail(); }));
+      el('leadTable').innerHTML = leads.length ? leads.map(lead => `<tr class="${state.selected === lead.id ? 'selected' : ''}"><td><button class="lead-button" data-lead="${escapeHtml(lead.id)}">${escapeHtml(lead.name)}<span class="lead-company">${escapeHtml(lead.company)} · ${escapeHtml(lead.market)}</span></button></td><td><span class="stage-pill ${escapeHtml(lead.stage)}">${escapeHtml(stageLabels[lead.stage] || lead.stage)}</span></td><td><span class="channel-pill">${escapeHtml(channelLabel(lead))}</span></td><td class="next-cell hide-mobile">${escapeHtml(lead.nextStep)}</td><td class="hide-mobile">${escapeHtml(lead.lastActivity || '未核验')}</td></tr>`).join('') : '<tr><td colspan="5"><div class="empty">没有匹配结果，请调整筛选条件。</div></td></tr>';
+      document.querySelectorAll('[data-lead]').forEach(button => button.addEventListener('click', () => selectLead(button.dataset.lead)));
+    }
+    function selectLead(id) {
+      state.selected = id;
+      renderTable();
+      renderDetail();
+      if (window.matchMedia('(max-width:1050px)').matches) el('detail').scrollIntoView({ behavior:'smooth', block:'start' });
     }
     function renderDetail() {
-      const lead = state.data.leads.find(item => item.id === state.selected) || filteredLeads()[0] || state.data.leads[0];
-      state.selected = lead?.id;
-      if (!lead) { el('detail').innerHTML = '<div class="empty">没有匹配结果</div>'; return; }
-      const contactChannel = escapeHtml(`邀请渠道：${lead.invitationChannel || 'Unknown'}；可见会话渠道：${lead.contactChannels?.join(' + ') || '暂无已验证会话'}；连接状态：${lead.connectionStatus || '未接触'}`);
-      const messagingDetail = lead.messaging ? `<div class="detail-section"><div class="detail-label">Messaging assessment</div><p>${escapeHtml(lead.messaging.summary)}</p><p>${escapeHtml(lead.messaging.assessment)}</p></div>` : '';
-      el('detail').innerHTML = `<div class="panel-head"><div><div class="detail-label">Lead detail</div><h2 class="detail-name">${escapeHtml(lead.name)}</h2><div class="detail-company">${escapeHtml(lead.company)} · ${escapeHtml(lead.market)}</div><span class="stage-pill">${escapeHtml(stageLabels[lead.stage])}</span></div></div><div class="detail-body"><div class="detail-section"><div class="detail-label">Contact channel</div><p>${contactChannel}</p></div><div class="detail-section"><div class="detail-label">Current signal</div><p>${escapeHtml(lead.trigger)}</p><p>线索观察：${escapeHtml(lead.triggerObservedAt || '历史记录，时间未核验')}</p></div><div class="detail-section"><div class="detail-label">Conversation angle</div><p>${escapeHtml(lead.angle)}</p></div>${messagingDetail}<div class="detail-section"><div class="detail-label">Next action</div><div class="next-step">${escapeHtml(lead.nextStep)}</div></div><div class="detail-section"><div class="detail-label">Activity timeline</div><ul class="timeline"><li><strong>${escapeHtml(lead.lastActivity)}</strong><br>${escapeHtml(lead.status)}</li><li>初筛阶段：匹配 ${escapeHtml(lead.persona)}</li><li>策略：围绕 supplier visibility、order milestone、QC closure 先提问，不直接推销软件</li></ul></div></div>`;
+      const visible = filteredLeads();
+      const lead = state.data.leads.find(item => item.id === state.selected) || visible[0] || state.data.leads[0];
+      if (!lead) { el('detail').innerHTML = '<div class="empty">没有可显示的线索。</div>'; return; }
+      state.selected = lead.id;
+      const events = leadEvents(lead);
+      const timeline = events.length ? events.slice(0, 6).map(event => `<li><span class="timeline-time">${escapeHtml(formatDate(event.eventAt))} · ${escapeHtml(event.channel)} · ${event.direction === 'inbound' ? '对方回复' : '我方动作'}</span>${escapeHtml(event.summary)}</li>`).join('') : `<li><span class="timeline-time">${escapeHtml(lead.lastActivity || '时间未核验')}</span>${escapeHtml(lead.status)}</li>`;
+      const profile = lead.profileUrl ? `<a class="profile-link" href="${escapeHtml(lead.profileUrl)}" target="_blank" rel="noreferrer">打开 LinkedIn 资料</a>` : '';
+      const messaging = lead.messaging ? `<section class="detail-section"><div class="detail-label">对话判断</div><div class="assessment"><p>${escapeHtml(lead.messaging.summary)}</p><p>${escapeHtml(lead.messaging.assessment)}</p></div></section>` : '';
+      const conversationChannels = lead.contactChannels?.length ? lead.contactChannels.join(' + ') : '暂无已验证会话';
+      const evidenceTime = lead.lastCheckedAt || lead.triggerObservedAt || state.data.meta.lastUpdatedAt;
+      el('detail').innerHTML = `<div class="detail-head"><div class="detail-kicker">Lead detail</div><h2 class="detail-name">${escapeHtml(lead.name)}</h2><div class="detail-company">${escapeHtml(lead.company)} · ${escapeHtml(lead.market)}<br>${escapeHtml(lead.persona)}</div><div class="detail-badges"><span class="stage-pill ${escapeHtml(lead.stage)}">${escapeHtml(stageLabels[lead.stage] || lead.stage)}</span><span class="action-state ${actionState(lead)}">${escapeHtml(actionLabels[actionState(lead)])}</span><span class="market-pill">${escapeHtml(lead.market)}</span></div>${profile}</div><div class="detail-body"><section class="detail-section"><div class="detail-label">沟通渠道</div><div class="channel-grid"><div class="channel-card"><div class="channel-card-label">连接邀请</div><div class="channel-card-value">${escapeHtml(lead.invitationChannel || '未核验')}</div></div><div class="channel-card"><div class="channel-card-label">会话渠道</div><div class="channel-card-value">${escapeHtml(conversationChannels)}</div></div><div class="channel-card"><div class="channel-card-label">连接状态</div><div class="channel-card-value">${escapeHtml(lead.connectionStatus || '尚未接触')}</div></div><div class="channel-card"><div class="channel-card-label">证据更新时间</div><div class="channel-card-value">${escapeHtml(formatDate(evidenceTime))}</div></div></div></section><section class="detail-section"><div class="detail-label">当前触发信号</div><p>${escapeHtml(lead.trigger)}</p><p>观察时间：${escapeHtml(formatDate(lead.triggerObservedAt))}</p></section><section class="detail-section"><div class="detail-label">建议沟通角度</div><p>${escapeHtml(lead.angle)}</p></section>${messaging}<section class="detail-section"><div class="detail-label">下一步</div><div class="next-step">${escapeHtml(lead.nextStep)}</div></section><section class="detail-section"><div class="detail-label">活动记录</div><ul class="timeline">${timeline}</ul></section></div>`;
     }
-    function render() { renderMetrics(); renderFocus(); renderKanban(); renderDetail(); }
-    ['search','market','persona'].forEach(id => document.getElementById(id).addEventListener('input', () => { renderKanban(); renderDetail(); }));
-    document.querySelectorAll('[data-filter]').forEach(button => button.addEventListener('click', () => { state.filter = button.dataset.filter; document.querySelectorAll('[data-filter]').forEach(b => b.classList.toggle('active', b===button)); renderKanban(); renderDetail(); }));
+    function render() {
+      renderCoverage();
+      renderMetrics();
+      renderFunnel();
+      renderPipeline();
+      renderActionSummary();
+      renderActionList();
+      renderTable();
+      renderDetail();
+    }
+    ['search','market','persona'].forEach(id => el(id).addEventListener('input', () => { state.actionFilter = 'all'; renderPipeline(); renderActionSummary(); renderActionList(); renderTable(); renderDetail(); }));
+    document.querySelectorAll('[data-filter]').forEach(button => button.addEventListener('click', () => {
+      state.filter = button.dataset.filter;
+      state.actionFilter = 'all';
+      document.querySelectorAll('[data-filter]').forEach(item => { const active = item === button; item.classList.toggle('active', active); item.setAttribute('aria-pressed', String(active)); });
+      renderActionSummary(); renderActionList(); renderTable(); renderDetail();
+    }));
+    const boot = data => { state.data = data; state.selected = data.leads.find(lead => actionState(lead) === 'reply_now')?.id || data.leads.find(lead => actionState(lead) === 'follow_up')?.id || data.leads[0]?.id; render(); };
+    window.bootDashboard = boot;
+    if (window.TRACKER_DATA) boot(window.TRACKER_DATA);
+    else if (!window.PUBLIC_DASHBOARD_ENCRYPTED) fetch('data/tracker.json').then(response => response.json()).then(boot).catch(() => { el('leadTable').innerHTML = '<tr><td colspan="5"><div class="empty">暂时无法读取数据文件。</div></td></tr>'; });
+  </script>
+
+  <script>
     const fromBase64 = value => Uint8Array.from(atob(value), character => character.charCodeAt(0));
-    const boot = data => { state.data = data; state.selected = data.leads[0]?.id; render(); };
     async function decryptData(password, bundle) {
       const material = await crypto.subtle.importKey('raw', new TextEncoder().encode(password), 'PBKDF2', false, ['deriveKey']);
-      const key = await crypto.subtle.deriveKey({name:'PBKDF2', salt:fromBase64(bundle.salt), iterations:bundle.iterations, hash:'SHA-256'}, material, {name:'AES-GCM', length:256}, false, ['decrypt']);
-      const plain = await crypto.subtle.decrypt({name:'AES-GCM', iv:fromBase64(bundle.iv)}, key, fromBase64(bundle.ciphertext));
+      const key = await crypto.subtle.deriveKey({ name:'PBKDF2', salt:fromBase64(bundle.salt), iterations:bundle.iterations, hash:'SHA-256' }, material, { name:'AES-GCM', length:256 }, false, ['decrypt']);
+      const plain = await crypto.subtle.decrypt({ name:'AES-GCM', iv:fromBase64(bundle.iv) }, key, fromBase64(bundle.ciphertext));
       return JSON.parse(new TextDecoder().decode(plain));
     }
     async function unlock(password) {
-      const version = new URLSearchParams(window.location.search).get('v');
-      const dataUrl = version ? `data/tracker.enc.json?v=${encodeURIComponent(version)}` : 'data/tracker.enc.json';
-      const response = await fetch(dataUrl, {cache:'no-store'});
-      if (!response.ok) throw new Error('data-unavailable');
+      const response = await fetch('data/tracker.enc.json', { cache:'no-store' });
+      if (!response.ok) throw new Error('encrypted-data-unavailable');
       return decryptData(password, await response.json());
     }
     document.getElementById('passwordForm').addEventListener('submit', async event => {
       event.preventDefault();
-      const error = el('passwordError');
-      const button = event.currentTarget.querySelector('button');
-      button.disabled = true;
-      error.textContent = '正在验证…';
+      const error = document.getElementById('passwordError');
+      const submit = event.currentTarget.querySelector('button');
+      error.textContent = '';
+      submit.disabled = true;
+      submit.textContent = '正在验证';
       try {
-        boot(await unlock(el('password').value));
+        window.bootDashboard(await unlock(document.getElementById('password').value));
         document.getElementById('passwordGate').classList.add('hidden');
-      } catch (reason) {
-        error.textContent = reason.message === 'data-unavailable'
-          ? '页面数据尚未发布，或当前使用的是 file:// 本地文件。请使用 GitHub Pages 链接。'
-          : '密码错误，请重新输入。';
-        el('password').select();
+        document.body.classList.remove('locked');
+      } catch (unlockError) {
+        error.textContent = unlockError.message === 'encrypted-data-unavailable' ? '数据文件暂时不可用，请稍后再试。' : '密码错误，请重新输入。';
+        document.getElementById('password').select();
       } finally {
-        button.disabled = false;
+        submit.disabled = false;
+        submit.textContent = '查看面板';
       }
     });
   </script>
