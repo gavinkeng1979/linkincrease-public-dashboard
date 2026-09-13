@@ -338,7 +338,7 @@
       el('accepted').textContent = metrics.accepted ?? '—';
       el('replies').textContent = metrics.replies ?? '—';
       el('qualified').textContent = metrics.qualified ?? '—';
-      el('acceptRateNote').textContent = metrics.rates?.acceptRate == null ? '分母尚未完整核验' : `邀请接受率 ${(metrics.rates.acceptRate * 100).toFixed(1)}%`;
+      el('acceptRateNote').textContent = metrics.rates?.acceptRate == null ? '旧名单待复核，接受率暂不计算' : `邀请接受率 ${(metrics.rates.acceptRate * 100).toFixed(1)}%`;
       el('poolSummary').textContent = `已保存 ${metrics.savedLeads ?? '—'} 人 · 行动名单 ${listMetrics.readyToContact ?? '—'} 人`;
       el('freshness').textContent = `更新于 ${formatDate(state.data.meta.lastUpdatedAt)}`;
       const checks = state.data.meta.channelChecks || {};
