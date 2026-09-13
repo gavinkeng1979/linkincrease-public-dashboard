@@ -132,6 +132,7 @@
     .stage-pill, .channel-pill, .market-pill { display:inline-flex; align-items:center; border-radius:999px; padding:5px 8px; font-size:9px; font-weight:800; white-space:nowrap; }
     .stage-pill { color:var(--blue); background:var(--blue-soft); }
     .stage-pill.connected, .stage-pill.qualified, .stage-pill.replied { color:var(--green); background:var(--green-soft); }
+    .stage-pill.inmail_sent { color:var(--amber); background:var(--amber-soft); }
     .stage-pill.monitoring { color:var(--muted); background:#eef1f5; }
     .stage-pill.demo { color:var(--purple); background:var(--purple-soft); }
     .channel-pill { color:#40516d; background:#eef2f7; }
@@ -280,7 +281,7 @@
   <script>window.PUBLIC_DASHBOARD_ENCRYPTED = true;</script>
   <script>
     const state = { data:null, selected:null, filter:'action', actionFilter:'all' };
-    const stageLabels = { monitoring:'观察中', invite_sent:'邀请待接受', connected:'已连接', replied:'已回复', qualified:'有效问题对话', demo:'Demo' };
+    const stageLabels = { monitoring:'观察中', invite_sent:'邀请待接受', inmail_sent:'首封消息待回', connected:'已连接', replied:'已回复', qualified:'有效问题对话', demo:'Demo' };
     const actionLabels = { reply_now:'需要回复', follow_up:'准备跟进', demo:'推进 Demo', waiting_response:'等待回复', waiting_acceptance:'等待接受', monitoring:'继续观察' };
     const actionRank = { reply_now:0, follow_up:1, demo:2, waiting_response:3, waiting_acceptance:4, monitoring:5 };
     const el = id => document.getElementById(id);
@@ -298,6 +299,7 @@
       const outbound = Date.parse(lead.messaging?.lastOutboundAt || 0);
       if (inbound > outbound) return 'reply_now';
       if (['qualified','replied'].includes(lead.stage)) return 'waiting_response';
+      if (lead.stage === 'inmail_sent') return 'waiting_response';
       if (lead.stage === 'connected') return 'follow_up';
       if (lead.stage === 'invite_sent') return 'waiting_acceptance';
       return 'monitoring';
@@ -351,7 +353,7 @@
       const metrics = state.data.metrics;
       const steps = [
         ['已联系', metrics.contactedPeople || 0],
-        ['邀请待接受', metrics.pending || 0],
+        ['首触待回应', (metrics.pending || 0) + (metrics.firstInMailBatchSentObserved || 0)],
         ['已连接', metrics.accepted || 0],
         ['已回复', metrics.replies || 0],
         ['有效问题对话', metrics.qualified || 0],
@@ -364,8 +366,8 @@
       const matching = state.data.leads.filter(matchesInputs).sort((first, second) => Date.parse(second.lastActivity) - Date.parse(first.lastActivity));
       const listMetrics = state.data.metrics.salesNavigatorLists || {};
       const lanes = [
-        { label:'待首轮接触', count:listMetrics.readyToContact ?? 0, aggregate:true, note:'名单级统计。13位候选人的逐条档案保留在 Sales Navigator「01 Action - Ready to Contact」。' },
-        { label:'邀请待接受', items:matching.filter(lead => lead.stage === 'invite_sent') },
+        { label:'待首轮接触', count:listMetrics.readyToContact ?? 0, aggregate:true, note:`名单级统计。${listMetrics.readyToContact ?? '—'}位候选人的逐条档案保留在 Sales Navigator「01 Action - Ready to Contact」。` },
+        { label:'首触待回应', items:matching.filter(lead => ['invite_sent','inmail_sent'].includes(lead.stage)) },
         { label:'已连接', items:matching.filter(lead => lead.stage === 'connected') },
         { label:'有效问题对话', items:matching.filter(lead => ['replied','qualified','demo'].includes(lead.stage)) }
       ];
