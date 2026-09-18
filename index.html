@@ -113,6 +113,77 @@
     .trend-response { position:relative; width:9px; border-radius:4px 4px 2px 2px; background:var(--green); }
     .trend-total { position:absolute; left:50%; bottom:calc(100% + 4px); color:#455168; font-size:10px; font-weight:800; transform:translateX(-50%); }
     .trend-date { align-self:center; color:var(--muted); font-size:11px; font-weight:750; }
+    .persona-panel { margin-bottom:14px; }
+    .persona-summary { display:grid; grid-template-columns:repeat(4, minmax(0,1fr)); border-bottom:1px solid var(--line); background:#fbfcfd; }
+    .persona-summary-item { min-width:0; padding:14px 18px; border-right:1px solid var(--line); }
+    .persona-summary-item:last-child { border-right:0; }
+    .persona-summary-label { color:var(--muted); font-size:12px; font-weight:800; letter-spacing:.05em; text-transform:uppercase; }
+    .persona-summary-value { margin-top:4px; font-size:22px; font-weight:850; letter-spacing:-.03em; }
+    .persona-summary-note { margin-top:3px; color:var(--muted); font-size:12px; line-height:1.45; }
+    .persona-dashboard { display:grid; grid-template-columns:1fr; gap:14px; padding:14px; border-bottom:1px solid var(--line); }
+    .persona-chart-card, .persona-focus { min-width:0; border:1px solid var(--line); border-radius:13px; background:#fff; }
+    .persona-card-head { display:flex; align-items:flex-start; justify-content:space-between; gap:14px; padding:15px 16px 0; }
+    .persona-card-title { margin:0; font-size:15px; letter-spacing:-.01em; }
+    .persona-card-hint { margin-top:4px; color:var(--muted); font-size:12px; line-height:1.5; }
+    .persona-legend { display:flex; gap:8px; color:var(--muted); font-size:11px; white-space:nowrap; }
+    .persona-legend span { display:inline-flex; align-items:center; gap:5px; }
+    .persona-legend i { width:8px; height:8px; border-radius:50%; background:var(--blue); }
+    .persona-legend .tier-b { background:#98a2b3; }
+    .persona-matrix-wrap { position:relative; padding:14px 24px 34px 50px; }
+    .persona-matrix { position:relative; height:380px; overflow:visible; border:1px solid var(--line); border-radius:12px; background:linear-gradient(to right, transparent calc(50% - .5px), #dce3ec 50%, transparent calc(50% + .5px)),linear-gradient(to top, transparent calc(50% - .5px), #dce3ec 50%, transparent calc(50% + .5px)),linear-gradient(135deg,#fbfcff,#f6f9ff); }
+    .matrix-quadrant { position:absolute; color:#8a94a6; font-size:11px; font-weight:750; pointer-events:none; }
+    .matrix-quadrant.top-left { top:10px; left:12px; }
+    .matrix-quadrant.top-right { top:10px; right:12px; color:var(--blue); }
+    .matrix-quadrant.bottom-left { bottom:10px; left:12px; }
+    .matrix-quadrant.bottom-right { right:12px; bottom:10px; }
+    .matrix-axis-x { position:absolute; right:24px; bottom:10px; color:var(--muted); font-size:11px; font-weight:800; }
+    .matrix-axis-y { position:absolute; left:13px; top:50%; color:var(--muted); font-size:11px; font-weight:800; transform:translate(-34%,-50%) rotate(-90deg); white-space:nowrap; }
+    .persona-point { position:absolute; z-index:2; display:flex; align-items:center; justify-content:center; border:3px solid #fff; border-radius:50%; color:#fff; background:var(--blue); box-shadow:0 5px 16px rgba(40,89,214,.26); font-size:11px; font-weight:900; transform:translate(-50%,50%); transition:transform .16s ease, box-shadow .16s ease; }
+    .persona-point.tier-b { background:#7b8799; box-shadow:0 5px 14px rgba(75,87,105,.2); }
+    .persona-point:hover, .persona-point.active { z-index:4; transform:translate(-50%,50%) scale(1.12); box-shadow:0 0 0 4px rgba(40,89,214,.15),0 7px 20px rgba(40,89,214,.28); }
+    .persona-point-label { position:absolute; left:50%; top:calc(100% + 5px); max-width:90px; color:#455168; font-size:10px; font-weight:800; line-height:1.2; text-align:center; transform:translateX(-50%); white-space:nowrap; }
+    .persona-focus { padding:18px 20px; background:linear-gradient(180deg,#fff,#fbfcff); }
+    .persona-focus-top { display:flex; align-items:flex-start; justify-content:space-between; gap:16px; }
+    .persona-kicker { color:var(--blue); font-size:11px; font-weight:850; letter-spacing:.08em; text-transform:uppercase; }
+    .persona-name { margin:5px 0 2px; font-size:23px; letter-spacing:-.03em; }
+    .persona-company { color:var(--muted); font-size:13px; }
+    .persona-score { min-width:68px; padding:10px 8px; border-radius:12px; color:#fff; background:var(--blue); text-align:center; }
+    .persona-score strong { display:block; font-size:25px; line-height:1; }
+    .persona-score span { display:block; margin-top:4px; font-size:10px; font-weight:800; letter-spacing:.06em; text-transform:uppercase; }
+    .persona-badges { display:flex; flex-wrap:wrap; gap:6px; margin-top:11px; }
+    .persona-badge { display:inline-flex; padding:5px 8px; border-radius:999px; color:#40516d; background:#eef2f7; font-size:11px; font-weight:800; }
+    .persona-badge.tier-a { color:var(--blue); background:var(--blue-soft); }
+    .persona-badge.confidence-high { color:var(--green); background:var(--green-soft); }
+    .persona-focus-section { margin-top:15px; }
+    .persona-focus-label { margin-bottom:6px; color:var(--muted); font-size:11px; font-weight:850; letter-spacing:.06em; text-transform:uppercase; }
+    .persona-focus-copy { margin:0; color:#3f4b5f; font-size:13px; line-height:1.6; }
+    .persona-focus-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; margin-top:15px; }
+    .persona-focus-block { min-width:0; padding:0 15px; border-left:1px solid var(--line); }
+    .persona-focus-block:first-child { padding-left:0; border-left:0; }
+    .persona-focus-block:last-child { padding-right:0; }
+    .persona-focus-block .persona-focus-section:first-child { margin-top:0; }
+    .persona-focus-bottom { display:grid; grid-template-columns:minmax(0,1.15fr) minmax(340px,.85fr); gap:16px; align-items:start; margin-top:16px; padding-top:16px; border-top:1px solid var(--line); }
+    .persona-focus-bottom .persona-focus-section { margin-top:0; }
+    .persona-list-compact { margin:0; padding-left:17px; color:#455168; font-size:12px; line-height:1.55; }
+    .persona-list-compact li + li { margin-top:4px; }
+    .persona-scorecard { display:grid; gap:8px; }
+    .persona-score-row { display:grid; grid-template-columns:82px minmax(0,1fr) 30px; align-items:center; gap:8px; color:#455168; font-size:11px; font-weight:750; }
+    .persona-score-track { height:7px; overflow:hidden; border-radius:999px; background:#e9edf3; }
+    .persona-score-fill { height:100%; border-radius:inherit; background:linear-gradient(90deg,var(--blue),#6b8ff0); }
+    .persona-next { padding:11px 12px; border:1px solid #cfe0ff; border-radius:10px; color:#28456f; background:#f3f7ff; font-size:13px; line-height:1.55; }
+    .persona-open { width:100%; margin-top:12px; padding:9px 11px; border:1px solid var(--line); border-radius:9px; color:var(--blue); background:#fff; font-size:12px; font-weight:850; }
+    .persona-roster-wrap { padding:14px; }
+    .persona-roster-head { display:flex; align-items:center; justify-content:space-between; gap:14px; margin:0 2px 10px; }
+    .persona-roster-title { margin:0; font-size:14px; }
+    .persona-roster-note { color:var(--muted); font-size:12px; }
+    .persona-roster { display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:8px; }
+    .persona-tile { min-width:0; padding:11px; border:1px solid var(--line); border-radius:11px; color:var(--ink); background:#fbfcfd; text-align:left; }
+    .persona-tile:hover, .persona-tile.active { border-color:#9cb5f3; background:#f5f8ff; box-shadow:0 0 0 2px var(--blue-soft); }
+    .persona-tile-top { display:flex; justify-content:space-between; gap:8px; align-items:flex-start; }
+    .persona-tile-name { min-width:0; font-size:13px; font-weight:850; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .persona-tile-score { color:var(--blue); font-size:13px; font-weight:900; }
+    .persona-tile-company { margin-top:3px; color:var(--muted); font-size:11px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .persona-tile-segment { margin-top:9px; color:#455168; font-size:11px; font-weight:750; line-height:1.4; }
     .pipeline-panel { margin-bottom:14px; }
     .pipeline-scroll { overflow-x:auto; overscroll-behavior-inline:contain; }
     .pipeline-board { display:grid; grid-template-columns:repeat(4, minmax(220px,1fr)); gap:10px; min-width:940px; padding:12px; background:#fbfcfd; }
@@ -198,6 +269,12 @@
       .insights-grid { grid-template-columns:1fr; }
       .insight-card { border-right:0; border-bottom:1px solid var(--line); }
       .insight-card-wide { grid-column:auto; border-top:0; border-bottom:0; }
+      .persona-dashboard { grid-template-columns:1fr; }
+      .persona-roster { grid-template-columns:repeat(2,minmax(0,1fr)); }
+      .persona-focus-grid { grid-template-columns:1fr; }
+      .persona-focus-block { padding:14px 0 0; border-left:0; border-top:1px solid var(--line); }
+      .persona-focus-block:first-child { padding-top:0; border-top:0; }
+      .persona-focus-bottom { grid-template-columns:1fr; }
     }
     @media (max-width:760px) {
       .shell { padding:20px 14px 34px; }
@@ -207,6 +284,13 @@
       .insight-summary { grid-template-columns:1fr; }
       .insight-summary-item { border-right:0; border-bottom:1px solid var(--line); }
       .insight-summary-item:last-child { border-bottom:0; }
+      .persona-summary { grid-template-columns:repeat(2,minmax(0,1fr)); }
+      .persona-summary-item:nth-child(2) { border-right:0; }
+      .persona-summary-item:nth-child(-n+2) { border-bottom:1px solid var(--line); }
+      .persona-dashboard { padding:10px; }
+      .persona-matrix-wrap { padding-left:43px; }
+      .persona-matrix { height:300px; }
+      .persona-roster { grid-template-columns:1fr; }
       .funnel { grid-template-columns:repeat(2,1fr); }
       .funnel-step:nth-child(3) { border-right:1px solid var(--line); }
       .funnel-step:nth-child(even) { border-right:0; }
@@ -301,6 +385,21 @@
         </article>
       </div>
     </section>
+    <section class="panel persona-panel" id="personaPanel" aria-label="高价值潜在客户画像">
+      <div class="panel-head"><div><h2 class="panel-title">高价值潜在客户画像</h2><div class="panel-hint">综合场景匹配、决策影响、互动质量和当前时机形成内部优先级；评分用于安排跟进，不代表采购意向。</div></div><span class="result-count" id="personaCoverage"></span></div>
+      <div class="persona-summary" id="personaSummary"></div>
+      <div class="persona-dashboard">
+        <article class="persona-chart-card">
+          <div class="persona-card-head"><div><h3 class="persona-card-title">价值与互动成熟度矩阵</h3><div class="persona-card-hint">越靠右代表Linkincrease场景匹配越高，越靠上代表互动证据越充分；圆点大小反映决策影响。</div></div><div class="persona-legend"><span><i></i>A级</span><span><i class="tier-b"></i>B级</span></div></div>
+          <div class="persona-matrix-wrap"><span class="matrix-axis-y">互动成熟度</span><div class="persona-matrix" id="personaMatrix" role="img" aria-label="高价值潜在客户场景匹配与互动成熟度矩阵"></div><span class="matrix-axis-x">场景匹配度 →</span></div>
+        </article>
+        <aside class="persona-focus" id="personaFocus" aria-live="polite"></aside>
+      </div>
+      <div class="persona-roster-wrap">
+        <div class="persona-roster-head"><h3 class="persona-roster-title">画像对象</h3><span class="persona-roster-note">点击姓名切换详细画像</span></div>
+        <div class="persona-roster" id="personaRoster"></div>
+      </div>
+    </section>
     <section class="panel pipeline-panel" aria-label="Pipeline 看板">
       <div class="panel-head"><div><h2 class="panel-title">Pipeline 看板</h2><div class="panel-hint">四个阶段始终横向并列；屏幕较窄时左右滚动查看，不改变列顺序。</div></div><span class="result-count">4 个阶段</span></div>
       <div class="pipeline-scroll"><div class="pipeline-board" id="pipelineBoard"></div></div>
@@ -328,7 +427,7 @@
   </main>
   <script>window.PUBLIC_DASHBOARD_ENCRYPTED = true;</script>
   <script>
-    const state = { data:null, selected:null, filter:'action', actionFilter:'all' };
+    const state = { data:null, selected:null, selectedPersona:null, filter:'action', actionFilter:'all' };
     const stageLabels = { monitoring:'观察中', invite_sent:'邀请待接受', inmail_sent:'首封消息待回', connected:'已连接', replied:'已回复', qualified:'有效问题对话', demo:'Demo' };
     const actionLabels = { reply_now:'需要回复', follow_up:'准备跟进', demo:'推进 Demo', waiting_response:'等待回复', waiting_acceptance:'等待接受', monitoring:'继续观察' };
     const actionRank = { reply_now:0, follow_up:1, demo:2, waiting_response:3, waiting_acceptance:4, monitoring:5 };
@@ -480,6 +579,39 @@
       const topRegion = Object.entries(regionCounts).sort((first, second) => second[1] - first[1])[0] || ['—',0];
       el('insightSummary').innerHTML = `<article class="insight-summary-item"><div class="insight-summary-label">主要客户地区</div><div class="insight-summary-value">${escapeHtml(topRegion[0])} · ${topRegion[1]}</div><div class="insight-summary-note">占当前联系人 ${formatPercent(topRegion[1], leads.length)}</div></article><article class="insight-summary-item"><div class="insight-summary-label">主要首触来源</div><div class="insight-summary-value">${escapeHtml(topSource[0])} · ${topSource[1]}</div><div class="insight-summary-note">占当前联系人 ${formatPercent(topSource[1], leads.length)}</div></article><article class="insight-summary-item"><div class="insight-summary-label">最新联系节奏</div><div class="insight-summary-value">${latest.outbound} 次外联</div><div class="insight-summary-note">${escapeHtml(trendText)} · 收到 ${latest.replies} 次回复</div></article>`;
     }
+    function renderPersonas() {
+      const analysis = state.data.profileAnalysis;
+      const panel = el('personaPanel');
+      if (!analysis?.profiles?.length) { panel.hidden = true; return; }
+      panel.hidden = false;
+      const profiles = analysis.profiles.map(profile => ({ ...profile, lead:state.data.leads.find(lead => lead.id === profile.leadId) })).filter(profile => profile.lead).sort((first, second) => second.score - first.score);
+      if (!profiles.some(profile => profile.leadId === state.selectedPersona)) state.selectedPersona = profiles[0]?.leadId;
+      const selected = profiles.find(profile => profile.leadId === state.selectedPersona) || profiles[0];
+      const tierACount = profiles.filter(profile => profile.tier === 'A').length;
+      const highConfidence = profiles.filter(profile => profile.confidence === 'high').length;
+      const averageScore = Math.round(profiles.reduce((sum, profile) => sum + profile.score, 0) / Math.max(1, profiles.length));
+      const segmentCounts = countBy(profiles, profile => profile.segment);
+      const topSegment = Object.entries(segmentCounts).sort((first, second) => second[1] - first[1])[0] || ['—',0];
+      el('personaCoverage').textContent = `${profiles.length} 位 · 分析于 ${formatDate(analysis.updatedAt)}`;
+      el('personaSummary').innerHTML = `<article class="persona-summary-item"><div class="persona-summary-label">高价值画像</div><div class="persona-summary-value">${profiles.length} 位</div><div class="persona-summary-note">已完成统一框架分析</div></article><article class="persona-summary-item"><div class="persona-summary-label">A级优先</div><div class="persona-summary-value">${tierACount} 位</div><div class="persona-summary-note">优先投入共创或深度验证</div></article><article class="persona-summary-item"><div class="persona-summary-label">高置信度</div><div class="persona-summary-value">${highConfidence} 位</div><div class="persona-summary-note">具备直接对话或多轮互动证据</div></article><article class="persona-summary-item"><div class="persona-summary-label">平均价值分</div><div class="persona-summary-value">${averageScore}</div><div class="persona-summary-note">主要类型：${escapeHtml(topSegment[0])}</div></article>`;
+      const initials = name => String(name || '').replace(/[^\p{L}\p{N}\s]/gu,'').split(/\s+/).filter(Boolean).slice(0,2).map(part => part[0]).join('').toUpperCase();
+      const scaleX = value => 8 + Math.max(0, Math.min(60, value - 40)) / 60 * 84;
+      const scaleY = value => 12 + Math.max(0, Math.min(65, value - 35)) / 65 * 74;
+      const points = profiles.map(profile => {
+        const size = 34 + Math.round((profile.scorecard?.decisionInfluence || 50) / 100 * 18);
+        const active = profile.leadId === selected.leadId ? ' active' : '';
+        return `<button class="persona-point ${profile.tier === 'B' ? 'tier-b' : ''}${active}" data-persona-id="${escapeHtml(profile.leadId)}" style="left:${scaleX(profile.scorecard?.scenarioFit || 40)}%;bottom:${scaleY(profile.scorecard?.engagement || 35)}%;width:${size}px;height:${size}px" aria-label="${escapeHtml(profile.lead.name)}，价值分${profile.score}"><span>${escapeHtml(initials(profile.lead.name))}</span><span class="persona-point-label">${escapeHtml(profile.lead.name.split(' ')[0])}</span></button>`;
+      }).join('');
+      el('personaMatrix').innerHTML = `<span class="matrix-quadrant top-left">关系成熟，场景待验证</span><span class="matrix-quadrant top-right">优先深挖 / 共创</span><span class="matrix-quadrant bottom-left">继续观察</span><span class="matrix-quadrant bottom-right">高匹配，等待信号</span>${points}`;
+      const list = items => `<ul class="persona-list-compact">${(items || []).map(item => `<li>${escapeHtml(item)}</li>`).join('')}</ul>`;
+      const scoreLabels = { scenarioFit:'场景匹配', decisionInfluence:'决策影响', engagement:'互动质量', timing:'当前时机' };
+      const scorecard = Object.entries(selected.scorecard || {}).map(([key, value]) => `<div class="persona-score-row"><span>${escapeHtml(scoreLabels[key] || key)}</span><span class="persona-score-track"><span class="persona-score-fill" style="display:block;width:${value}%"></span></span><strong>${value}</strong></div>`).join('');
+      const confidenceLabels = { high:'高置信', medium:'中等置信', low:'低置信' };
+      el('personaFocus').innerHTML = `<div class="persona-focus-top"><div><div class="persona-kicker">${escapeHtml(selected.segment)}</div><h3 class="persona-name">${escapeHtml(selected.lead.name)}</h3><div class="persona-company">${escapeHtml(selected.lead.company)} · ${escapeHtml(selected.lead.market)}</div></div><div class="persona-score"><strong>${selected.score}</strong><span>价值分</span></div></div><div class="persona-badges"><span class="persona-badge ${selected.tier === 'A' ? 'tier-a' : ''}">${escapeHtml(selected.tier)}级优先</span><span class="persona-badge ${selected.confidence === 'high' ? 'confidence-high' : ''}">${escapeHtml(confidenceLabels[selected.confidence] || selected.confidence)}</span><span class="persona-badge">${escapeHtml(selected.lead.stage === 'qualified' ? '有效问题对话' : stageLabels[selected.lead.stage] || selected.lead.stage)}</span></div><div class="persona-focus-grid"><div class="persona-focus-block"><section class="persona-focus-section"><div class="persona-focus-label">战略角色</div><p class="persona-focus-copy">${escapeHtml(selected.strategicRole)}</p></section><section class="persona-focus-section"><div class="persona-focus-label">核心需求假设</div><p class="persona-focus-copy">${escapeHtml(selected.primaryNeed)}</p></section></div><div class="persona-focus-block"><section class="persona-focus-section"><div class="persona-focus-label">已观察信号</div>${list(selected.signals)}</section><section class="persona-focus-section"><div class="persona-focus-label">关键障碍</div>${list(selected.risks)}</section></div><div class="persona-focus-block"><section class="persona-focus-section"><div class="persona-focus-label">流程痛点</div>${list(selected.painPoints)}</section><section class="persona-focus-section"><div class="persona-focus-label">价值假设</div>${list(selected.valueHypothesis)}</section></div></div><div class="persona-focus-bottom"><section class="persona-focus-section"><div class="persona-focus-label">四维评分</div><div class="persona-scorecard">${scorecard}</div></section><div><section class="persona-focus-section"><div class="persona-focus-label">建议下一步</div><div class="persona-next">${escapeHtml(selected.nextMove)}</div></section><section class="persona-focus-section"><div class="persona-focus-label">证据边界</div><p class="persona-focus-copy">${escapeHtml(selected.evidence)} · 观察于 ${escapeHtml(formatDate(selected.observedAt))}</p></section></div></div><button class="persona-open" data-open-persona-lead="${escapeHtml(selected.leadId)}">在线索详情中查看完整记录</button>`;
+      el('personaRoster').innerHTML = profiles.map(profile => `<button class="persona-tile ${profile.leadId === selected.leadId ? 'active' : ''}" data-persona-id="${escapeHtml(profile.leadId)}"><span class="persona-tile-top"><span class="persona-tile-name">${escapeHtml(profile.lead.name)}</span><span class="persona-tile-score">${profile.score}</span></span><span class="persona-tile-company">${escapeHtml(profile.lead.company)}</span><span class="persona-tile-segment">${escapeHtml(profile.tier)}级 · ${escapeHtml(profile.segment)}</span></button>`).join('');
+      document.querySelectorAll('[data-persona-id]').forEach(button => button.addEventListener('click', () => { state.selectedPersona = button.dataset.personaId; renderPersonas(); }));
+      document.querySelector('[data-open-persona-lead]')?.addEventListener('click', event => { selectLead(event.currentTarget.dataset.openPersonaLead); el('detail').scrollIntoView({ behavior:'smooth', block:'start' }); });
+    }
     function renderPipeline() {
       const matching = state.data.leads.filter(matchesInputs).sort((first, second) => Date.parse(second.lastActivity) - Date.parse(first.lastActivity));
       const listMetrics = state.data.metrics.salesNavigatorLists || {};
@@ -553,6 +685,7 @@
       renderMetrics();
       renderFunnel();
       renderInsights();
+      renderPersonas();
       renderPipeline();
       renderActionSummary();
       renderActionList();
@@ -566,7 +699,7 @@
       document.querySelectorAll('[data-filter]').forEach(item => { const active = item === button; item.classList.toggle('active', active); item.setAttribute('aria-pressed', String(active)); });
       renderActionSummary(); renderActionList(); renderTable(); renderDetail();
     }));
-    const boot = data => { state.data = data; state.selected = data.leads.find(lead => actionState(lead) === 'reply_now')?.id || data.leads.find(lead => actionState(lead) === 'follow_up')?.id || data.leads[0]?.id; render(); };
+    const boot = data => { state.data = data; state.selected = data.leads.find(lead => actionState(lead) === 'reply_now')?.id || data.leads.find(lead => actionState(lead) === 'follow_up')?.id || data.leads[0]?.id; state.selectedPersona = data.profileAnalysis?.profiles?.sort((first, second) => second.score - first.score)[0]?.leadId || null; render(); };
     window.bootDashboard = boot;
     if (window.TRACKER_DATA) boot(window.TRACKER_DATA);
     else if (!window.PUBLIC_DASHBOARD_ENCRYPTED) fetch('data/tracker.json').then(response => response.json()).then(boot).catch(() => { el('leadTable').innerHTML = '<tr><td colspan="5"><div class="empty">暂时无法读取数据文件。</div></td></tr>'; });
