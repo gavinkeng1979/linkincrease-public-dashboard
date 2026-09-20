@@ -364,9 +364,9 @@
     <section class="kpis" aria-label="关键指标">
       <article class="kpi"><div class="kpi-top"><div class="kpi-label">待首轮接触</div><span class="kpi-accent"></span></div><div class="kpi-value" id="readyToContact">—</div><div class="kpi-note">按实际外联状态核算</div></article>
       <article class="kpi"><div class="kpi-top"><div class="kpi-label">已联系对象</div><span class="kpi-accent purple"></span></div><div class="kpi-value" id="contactedPeople">—</div><div class="kpi-note">去重后的当前跟进名单</div></article>
-      <article class="kpi"><div class="kpi-top"><div class="kpi-label">邀请待接受</div><span class="kpi-accent amber"></span></div><div class="kpi-value" id="pending">—</div><div class="kpi-note">等待，不重复发送邀请</div></article>
-      <article class="kpi"><div class="kpi-top"><div class="kpi-label">已建立连接</div><span class="kpi-accent green"></span></div><div class="kpi-value" id="accepted">—</div><div class="kpi-note" id="acceptRateNote">按已验证邀请计算</div></article>
-      <article class="kpi"><div class="kpi-top"><div class="kpi-label">已回复联系人</div><span class="kpi-accent green"></span></div><div class="kpi-value" id="replies">—</div><div class="kpi-note">Messaging 最近完整核查结果</div></article>
+      <article class="kpi"><div class="kpi-top"><div class="kpi-label">邀请待接受</div><span class="kpi-accent amber"></span></div><div class="kpi-value" id="pending">—</div><div class="kpi-note">9/20已发送邀请名单逐名核对</div></article>
+      <article class="kpi"><div class="kpi-top"><div class="kpi-label">已建立连接</div><span class="kpi-accent green"></span></div><div class="kpi-value" id="accepted">—</div><div class="kpi-note" id="acceptRateNote">跟踪表当前好友，非接受率</div></article>
+      <article class="kpi"><div class="kpi-top"><div class="kpi-label">已记录回复联系人</div><span class="kpi-accent green"></span></div><div class="kpi-value" id="replies">—</div><div class="kpi-note">按私信入站事件去重，非全量</div></article>
       <article class="kpi"><div class="kpi-top"><div class="kpi-label">有效问题对话</div><span class="kpi-accent green"></span></div><div class="kpi-value" id="qualified">—</div><div class="kpi-note">不等于采购意向或销售合格</div></article>
     </section>
     <section class="panel funnel-panel" aria-label="关系漏斗">
@@ -436,7 +436,7 @@
   <script>window.PUBLIC_DASHBOARD_ENCRYPTED = true;</script>
   <script>
     const state = { data:null, selected:null, selectedPersona:null, filter:'action', actionFilter:'all' };
-    const stageLabels = { monitoring:'观察中', invite_sent:'邀请待接受', inmail_sent:'首封消息待回', connected:'已连接', replied:'已回复', qualified:'有效问题对话', demo:'Demo' };
+    const stageLabels = { monitoring:'观察中', invite_sent:'已发邀请', inmail_sent:'首封消息待回', connected:'已连接', replied:'已回复', qualified:'有效问题对话', demo:'Demo' };
     const actionLabels = { reply_now:'需要回复', follow_up:'准备跟进', demo:'推进 Demo', waiting_response:'等待回复', waiting_acceptance:'等待接受', monitoring:'继续观察' };
     const actionRank = { reply_now:0, follow_up:1, demo:2, waiting_response:3, waiting_acceptance:4, monitoring:5 };
     const el = id => document.getElementById(id);
@@ -449,10 +449,10 @@
     const primaryMarket = market => String(market || 'Unknown').split('/')[0].trim();
     const marketGroup = market => {
       const primary = primaryMarket(market);
-      if (['US','Canada'].includes(primary)) return 'US';
+      if (['US','USA','United States','Canada'].includes(primary)) return 'US';
       if (primary === 'UK') return 'UK';
       if (['AU','Australia','New Zealand'].includes(primary)) return 'AU';
-      if (['Europe','Netherlands'].includes(primary)) return 'Europe';
+      if (['Europe','Netherlands','Czech Republic','Denmark'].includes(primary)) return 'Europe';
       if (['Asia','China','Vietnam','Japan','South Korea','Korea','Indonesia','India'].includes(primary)) return 'Asia';
       return primary === 'Unknown' ? 'Unknown' : 'Other';
     };
@@ -473,11 +473,12 @@
       if (lead.stage === 'demo') return 'demo';
       const inbound = Date.parse(lead.messaging?.lastInboundAt || 0);
       const outbound = Date.parse(lead.messaging?.lastOutboundAt || 0);
-      if (inbound > outbound) return 'reply_now';
+      if (inbound > outbound && lead.messaging?.replyRequired !== false) return 'reply_now';
+      if (lead.messaging?.replyRequired === false) return 'monitoring';
       if (['qualified','replied'].includes(lead.stage)) return 'waiting_response';
       if (lead.stage === 'inmail_sent') return 'waiting_response';
       if (lead.stage === 'connected') return 'follow_up';
-      if (lead.stage === 'invite_sent') return 'waiting_acceptance';
+      if (lead.stage === 'invite_sent') return lead.connectionStatus === 'pending' ? 'waiting_acceptance' : 'monitoring';
       return 'monitoring';
     };
     const channelLabel = lead => {
@@ -507,27 +508,28 @@
       const listMetrics = metrics.salesNavigatorLists || {};
       el('readyToContact').textContent = listMetrics.readyToContact ?? '—';
       el('contactedPeople').textContent = metrics.contactedPeople ?? '—';
-      el('pending').textContent = metrics.pending ?? '—';
-      el('accepted').textContent = metrics.accepted ?? '—';
-      el('replies').textContent = metrics.replies ?? '—';
+      el('pending').textContent = metrics.pendingCurrentObserved ?? '—';
+      el('accepted').textContent = metrics.connectedTrackedCurrentObserved ?? '—';
+      const documentedReplies = new Set((state.data.events || []).filter(event => event.direction === 'inbound' && ['reply','message','message_reply'].includes(event.type)).map(event => event.leadId)).size;
+      el('replies').textContent = documentedReplies;
       el('qualified').textContent = metrics.qualified ?? '—';
-      el('acceptRateNote').textContent = metrics.rates?.acceptRate == null ? '旧名单待复核，接受率暂不计算' : `邀请接受率 ${(metrics.rates.acceptRate * 100).toFixed(1)}%`;
+      el('acceptRateNote').textContent = `跟踪表 ${metrics.connectedTrackedCurrentObserved ?? '—'} 位 · 账号好友 ${metrics.account?.connections ?? '—'} 位`;
       const staleReady = listMetrics.staleReadyToContactEntries || 0;
-      el('poolSummary').textContent = `已保存 ${metrics.savedLeads ?? '—'} 人 · 实际待首触 ${listMetrics.readyToContact ?? '—'} 人${staleReady ? ` · 平台名单待整理 ${staleReady} 人` : ''}`;
-      el('freshness').textContent = `更新于 ${formatDate(state.data.meta.lastUpdatedAt)}`;
+      el('poolSummary').textContent = `GTM汇总快照 ${formatDate(metrics.snapshotAt)} · 已保存 ${metrics.savedLeads ?? '—'} 人 · 待首触 ${listMetrics.readyToContact ?? '—'} 人${staleReady ? ` · 旧名单待整理 ${staleReady} 人` : ''}`;
+      el('freshness').textContent = `记录修订于 ${formatDate(state.data.meta.lastUpdatedAt)} · 汇总快照 ${formatDate(metrics.snapshotAt)}`;
       const checks = state.data.meta.channelChecks || {};
-      const primaryChannelsVerified = checks.salesNavigator?.status === 'verified' && checks.linkedinMessaging?.status === 'verified';
-      el('syncDetail').textContent = primaryChannelsVerified ? 'Sales Navigator 与 LinkedIn Messaging 均已核查' : '部分渠道仍需复核';
-      el('syncDot').classList.toggle('partial', !primaryChannelsVerified);
-      el('sourceNote').textContent = `${state.data.meta.source} · ${state.data.meta.updateNote}`;
+      const channelsChecked = Boolean(checks.salesNavigator?.checkedAt && checks.linkedinMessaging?.checkedAt);
+      el('syncDetail').textContent = channelsChecked ? '两个消息渠道已增量核对；历史会话与GTM汇总尚未全量复核' : '消息渠道仍需复核';
+      el('syncDot').classList.toggle('partial', true);
+      el('sourceNote').textContent = `${state.data.meta.source} · ${metrics.snapshotNote} · ${state.data.meta.updateNote}`;
     }
     function renderFunnel() {
       const metrics = state.data.metrics;
       const steps = [
         ['已联系', metrics.contactedPeople || 0],
-        ['首触待回应', (metrics.pending || 0) + (metrics.directMessagesAwaitingReplyObserved || metrics.firstInMailBatchSentObserved || 0)],
-        ['已连接', metrics.accepted || 0],
-        ['已回复', metrics.replies || 0],
+        ['消息待回复', metrics.directMessagesAwaitingReplyObserved || 0],
+        ['已连接', metrics.connectedTrackedCurrentObserved || 0],
+        ['已记录回复', new Set((state.data.events || []).filter(event => event.direction === 'inbound' && ['reply','message','message_reply'].includes(event.type)).map(event => event.leadId)).size],
         ['有效问题对话', metrics.qualified || 0],
         ['Demo', metrics.demo?.booked || metrics.demos || 0]
       ];
@@ -551,12 +553,12 @@
         const day = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2,'0')}-${String(date.getDate()).padStart(2,'0')}`;
         const dayEvents = dated.filter(event => event.eventAt.slice(0, 10) === day);
         const outbound = dayEvents.filter(event => event.direction === 'outbound');
-        const invitations = outbound.filter(event => ['invitation_sent','connection_invitation'].includes(event.type)).length;
+        const invitations = outbound.filter(event => ['invite_sent','invitation_sent','connection_invitation'].includes(event.type)).length;
         const comments = outbound.filter(event => ['public_comment','public_comment_reply'].includes(event.type)).length;
-        const messages = outbound.length - invitations - comments;
-        const replies = dayEvents.filter(event => event.direction === 'inbound' && ['reply','message','message_reply','public_comment_reply'].includes(event.type)).length;
+        const messages = outbound.filter(event => ['message','message_sent','message_reply','inmail_sent'].includes(event.type)).length;
+        const replies = dayEvents.filter(event => event.direction === 'inbound' && ['reply','message','message_reply'].includes(event.type)).length;
         const accepted = dayEvents.filter(event => event.direction === 'inbound' && ['connection_accepted','invitation_accepted'].includes(event.type)).length;
-        return { day, invitations, messages, comments, replies, accepted, outbound:outbound.length };
+        return { day, invitations, messages, comments, replies, accepted, outbound:invitations + messages + comments };
       });
     }
     function renderInsights() {
@@ -567,7 +569,7 @@
       const regionPalette = ['var(--blue)','var(--purple)','var(--green)','#d98516','#667085','#b9c2d0'];
       el('sourceDistribution').innerHTML = distributionRows(sourceCounts, leads.length, sourcePalette);
       el('regionDistribution').innerHTML = distributionRows(regionCounts, leads.length, regionPalette);
-      el('insightCoverage').textContent = `${leads.length} 位联系人 · ${(state.data.events || []).length} 条活动记录`;
+      el('insightCoverage').textContent = `${leads.length} 位联系人 · ${(state.data.events || []).length} 条已记录活动（非全量）`;
       const series = dailySeries();
       const maximum = Math.max(1, ...series.map(day => Math.max(day.outbound, day.replies)));
       el('dailyTrend').style.setProperty('--trend-days', series.length);
@@ -582,7 +584,7 @@
       const recentOutbound = recent.reduce((sum, day) => sum + day.outbound, 0);
       const trendDelta = latest.outbound - previous.outbound;
       const trendText = trendDelta === 0 ? '较前一日持平' : `较前一日 ${trendDelta > 0 ? '+' : ''}${trendDelta}`;
-      el('trendStats').innerHTML = `<span class="trend-stat">今日外联 ${latest.outbound}</span><span class="trend-stat">今日回复 ${latest.replies}</span><span class="trend-stat">7日均值 ${(recentOutbound / Math.max(1, recent.length)).toFixed(1)}</span><span class="trend-stat">${escapeHtml(trendText)}</span>`;
+      el('trendStats').innerHTML = `<span class="trend-stat">${escapeHtml(latest.day || '最近')}已记录外联 ${latest.outbound}</span><span class="trend-stat">已记录回复 ${latest.replies}</span><span class="trend-stat">7日记录均值 ${(recentOutbound / Math.max(1, recent.length)).toFixed(1)}</span><span class="trend-stat">${escapeHtml(trendText)}</span>`;
       const topSource = Object.entries(sourceCounts).sort((first, second) => second[1] - first[1])[0] || ['—',0];
       const topRegion = Object.entries(regionCounts).sort((first, second) => second[1] - first[1])[0] || ['—',0];
       el('insightSummary').innerHTML = `<article class="insight-summary-item"><div class="insight-summary-label">主要客户地区</div><div class="insight-summary-value">${escapeHtml(topRegion[0])} · ${topRegion[1]}</div><div class="insight-summary-note">占当前联系人 ${formatPercent(topRegion[1], leads.length)}</div></article><article class="insight-summary-item"><div class="insight-summary-label">主要首触来源</div><div class="insight-summary-value">${escapeHtml(topSource[0])} · ${topSource[1]}</div><div class="insight-summary-note">占当前联系人 ${formatPercent(topSource[1], leads.length)}</div></article><article class="insight-summary-item"><div class="insight-summary-label">最新联系节奏</div><div class="insight-summary-value">${latest.outbound} 次外联</div><div class="insight-summary-note">${escapeHtml(trendText)} · 收到 ${latest.replies} 次回复</div></article>`;
@@ -630,7 +632,7 @@
         { label:'待首轮接触', count:listMetrics.readyToContact ?? 0, aggregate:true, note:listMetrics.staleReadyToContactEntries ? `当前无未首触对象；Sales Navigator「01」仍有${listMetrics.staleReadyToContactEntries}条已接触记录待整理。` : `名单级统计。${listMetrics.readyToContact ?? '—'}位候选人的逐条档案保留在 Sales Navigator「01 Action - Ready to Contact」。` },
         { label:'首触待回应', items:matching.filter(lead => ['invite_sent','inmail_sent'].includes(lead.stage)) },
         { label:'已连接', items:matching.filter(lead => lead.stage === 'connected') },
-        { label:'有效问题对话', items:matching.filter(lead => ['replied','qualified','demo'].includes(lead.stage)) }
+        { label:'已回复 / 有效对话', items:matching.filter(lead => ['replied','qualified','demo'].includes(lead.stage)) }
       ];
       el('pipelineBoard').innerHTML = lanes.map(lane => {
         const items = lane.items || [];
@@ -685,7 +687,10 @@
       if (!lead) { el('detail').innerHTML = '<div class="empty">没有可显示的线索。</div>'; return; }
       state.selected = lead.id;
       const events = leadEvents(lead);
-      const timeline = events.length ? events.slice(0, 6).map(event => `<li><span class="timeline-time">${escapeHtml(formatDate(event.eventAt))} · ${escapeHtml(event.channel)} · ${event.direction === 'inbound' ? '对方回复' : '我方动作'}</span>${escapeHtml(event.summary)}</li>`).join('') : `<li><span class="timeline-time">${escapeHtml(lead.lastActivity || '时间未核验')}</span>${escapeHtml(lead.status)}</li>`;
+      const timeline = events.length ? events.slice(0, 6).map(event => {
+        const eventLabel = ['connection_accepted','invitation_accepted','connection_status_observed'].includes(event.type) ? '关系状态' : event.type === 'public_comment_reply' ? '公开互动' : event.direction === 'inbound' && ['reply','message','message_reply'].includes(event.type) ? '对方私信回复' : event.direction === 'outbound' ? '我方动作' : '动态观察';
+        return `<li><span class="timeline-time">${escapeHtml(formatDate(event.eventAt))} · ${escapeHtml(event.channel)} · ${eventLabel}</span>${escapeHtml(event.summary)}</li>`;
+      }).join('') : `<li><span class="timeline-time">${escapeHtml(lead.lastActivity || '时间未核验')}</span>${escapeHtml(lead.status)}</li>`;
       const profile = lead.profileUrl ? `<a class="profile-link" href="${escapeHtml(lead.profileUrl)}" target="_blank" rel="noreferrer">打开 LinkedIn 资料</a>` : '';
       const messaging = lead.messaging ? `<section class="detail-section"><div class="detail-label">对话判断</div><div class="assessment"><p>${escapeHtml(lead.messaging.summary)}</p><p>${escapeHtml(lead.messaging.assessment)}</p></div></section>` : '';
       const conversationChannels = lead.contactChannels?.length ? lead.contactChannels.join(' + ') : '暂无已验证会话';
