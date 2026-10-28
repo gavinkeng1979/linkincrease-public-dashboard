@@ -311,6 +311,48 @@
       .channel-grid { grid-template-columns:1fr; }
     }
 
+    .ledger-coverage { display:flex; flex-wrap:wrap; gap:8px 18px; color:var(--muted); font-size:12px; margin:0 0 16px; }
+    .ledger-coverage strong { color:var(--ink); font-weight:750; }
+    .article-panel { margin:18px 0; scroll-margin-top:18px; }
+    .article-panel .panel-head { align-items:center; }
+    .article-controls { display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+    .article-controls input,.article-controls select { min-height:37px; border:1px solid var(--line-strong); border-radius:8px; background:#fff; padding:7px 10px; color:var(--ink); font-size:12px; }
+    .article-controls input { width:220px; }
+    .article-controls select { width:auto; max-width:200px; }
+    .article-summary { display:grid; grid-template-columns:repeat(4,minmax(0,1fr)); gap:12px; padding:16px 18px 0; }
+    .article-summary-item { background:var(--paper); border:1px solid var(--line); padding:14px 16px; border-radius:10px; }
+    .article-summary-item .metric-label { color:var(--muted); font-size:11px; font-weight:750; }
+    .article-summary-item strong { display:block; margin:5px 0 2px; font-size:27px; letter-spacing:-.04em; }
+    .article-summary-item small { display:block; color:var(--muted); font-size:11px; }
+    .article-charts { display:grid; grid-template-columns:1.4fr 1fr; gap:16px; padding:16px 18px; }
+    .article-chart-card { border:1px solid var(--line); border-radius:11px; padding:16px; }
+    .article-chart-card h3 { margin:0 0 5px; font-size:14px; }
+    .article-chart-card .chart-hint { color:var(--muted); font-size:11px; margin:0 0 15px; }
+    .article-rank-row { display:grid; grid-template-columns:28px minmax(0,1fr) 34px; gap:10px; align-items:center; margin:12px 0; }
+    .article-rank-number { font-size:11px; color:var(--subtle); font-weight:750; }
+    .article-rank-row a { display:block; color:var(--ink); font-size:12px; text-decoration:none; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; }
+    .article-rank-row a:hover { color:var(--blue); }
+    .article-rank-track { margin-top:6px; height:5px; background:var(--blue-soft); border-radius:3px; }
+    .article-rank-fill { height:100%; background:var(--blue); border-radius:3px; }
+    .article-rank-value { text-align:right; color:var(--blue); font-size:15px; font-weight:800; }
+    .article-week-bars { display:grid; grid-template-columns:repeat(7,1fr); height:172px; gap:10px; align-items:end; margin:24px 0 8px; }
+    .article-day { display:flex; flex-direction:column; align-items:center; justify-content:flex-end; height:100%; font-size:10px; color:var(--muted); gap:6px; }
+    .article-day b { font-size:12px; color:var(--ink); }
+    .article-day .bar { width:100%; max-width:30px; border-radius:4px 4px 1px 1px; background:var(--blue); min-height:2px; }
+    .article-insight { margin:0 18px 16px; padding:12px 15px; border:1px solid #d7e2fb; border-radius:9px; color:#385377; background:#f7faff; font-size:12px; line-height:1.7; }
+    .article-note { padding:13px 18px; font-size:11px; color:var(--muted); border-top:1px solid var(--line); line-height:1.7; }
+    .article-table { min-width:1000px; }
+    .article-table td { font-size:12px; padding:14px 13px; }
+    .article-table th { font-size:11px; padding:12px 13px; white-space:nowrap; }
+    .article-table .article-title { max-width:360px; display:block; color:var(--ink); font-weight:700; text-decoration:none; line-height:1.45; }
+    .article-table .article-title:hover { color:var(--blue); }
+    .article-table .article-sub { margin-top:4px; font-size:10px; color:var(--subtle); }
+    .article-count { color:var(--blue); font-size:19px; font-weight:850; font-variant-numeric:tabular-nums; }
+    .article-muted { color:var(--muted); font-size:11px; }
+    .article-badge { display:inline-block; background:var(--blue-soft); color:var(--blue); border-radius:4px; padding:2px 5px; font-size:10px; margin-left:4px; }
+    .article-quick-link { color:var(--blue); text-decoration:none; font-size:12px; margin-top:8px; display:inline-block; }
+    @media (max-width:850px) { .article-summary {grid-template-columns:repeat(2,minmax(0,1fr))} .article-charts {grid-template-columns:1fr} .article-controls{width:100%} .article-controls input{flex:1;min-width:120px}.article-panel .panel-head{flex-wrap:wrap} }
+
     body.locked { overflow:hidden; }
     body.locked .shell { visibility:hidden; }
     .password-gate { position:fixed; inset:0; z-index:20; display:grid; place-items:center; padding:24px; background:rgba(244,246,249,.98); }
@@ -343,13 +385,14 @@
       <div>
         <div class="eyebrow">Linkincrease · Internal workspace</div>
         <h1>Customer Growth Control Room</h1>
-        <p class="subtitle">把名单规模、关系进展和下一步动作分开呈现，让团队先处理最值得行动的 LinkedIn 线索。</p>
+        <p class="subtitle">客户关系、下一步动作与专栏表现，共用一份有核验时间的数据记录。</p><a class="article-quick-link" href="#articlePanel">查看文章浏览量分析 ↓</a>
       </div>
       <div class="sync-card" aria-live="polite">
         <div class="sync-line"><span class="status-dot partial" id="syncDot"></span><span id="freshness">数据更新中…</span></div>
         <div class="sync-detail" id="syncDetail">正在读取渠道核查状态</div>
       </div>
     </header>
+    <div class="ledger-coverage" id="ledgerCoverage"></div>
     <section class="toolbar" aria-label="线索筛选">
       <label class="search"><input id="search" type="search" placeholder="搜索姓名、公司、角色或触发信号" aria-label="搜索线索"></label>
       <label class="select-wrap"><select id="market" aria-label="按市场筛选"><option value="all">全部市场</option><option value="US">美国</option><option value="UK">英国</option><option value="AU">澳大利亚</option><option value="Europe">欧洲</option><option value="Asia">亚洲</option><option value="Unknown">待核验</option></select></label>
@@ -362,16 +405,25 @@
       </div>
     </section>
     <section class="kpis" aria-label="关键指标">
-      <article class="kpi"><div class="kpi-top"><div class="kpi-label">待首轮接触</div><span class="kpi-accent"></span></div><div class="kpi-value" id="readyToContact">—</div><div class="kpi-note">按实际外联状态核算</div></article>
-      <article class="kpi"><div class="kpi-top"><div class="kpi-label">已联系对象</div><span class="kpi-accent purple"></span></div><div class="kpi-value" id="contactedPeople">—</div><div class="kpi-note">去重后的当前跟进名单</div></article>
-      <article class="kpi"><div class="kpi-top"><div class="kpi-label">邀请待接受</div><span class="kpi-accent amber"></span></div><div class="kpi-value" id="pending">—</div><div class="kpi-note">9/20已发送邀请名单逐名核对</div></article>
-      <article class="kpi"><div class="kpi-top"><div class="kpi-label">已建立连接</div><span class="kpi-accent green"></span></div><div class="kpi-value" id="accepted">—</div><div class="kpi-note" id="acceptRateNote">跟踪表当前好友，非接受率</div></article>
+      <article class="kpi"><div class="kpi-top"><div class="kpi-label">台账联系人</div><span class="kpi-accent"></span></div><div class="kpi-value" id="readyToContact">—</div><div class="kpi-note">当前唯一客户数据源</div></article>
+      <article class="kpi"><div class="kpi-top"><div class="kpi-label">有外联记录</div><span class="kpi-accent purple"></span></div><div class="kpi-value" id="contactedPeople">—</div><div class="kpi-note">按已记录外联事件去重，非全账户</div></article>
+      <article class="kpi"><div class="kpi-top"><div class="kpi-label">邀请待接受（台账）</div><span class="kpi-accent amber"></span></div><div class="kpi-value" id="pending">—</div><div class="kpi-note">当前台账中明确待接受的连接记录</div></article>
+      <article class="kpi"><div class="kpi-top"><div class="kpi-label">已连接（台账）</div><span class="kpi-accent green"></span></div><div class="kpi-value" id="accepted">—</div><div class="kpi-note" id="acceptRateNote">跟踪表当前好友，非接受率</div></article>
       <article class="kpi"><div class="kpi-top"><div class="kpi-label">已记录回复联系人</div><span class="kpi-accent green"></span></div><div class="kpi-value" id="replies">—</div><div class="kpi-note">按私信入站事件去重，非全量</div></article>
-      <article class="kpi"><div class="kpi-top"><div class="kpi-label">有效问题对话</div><span class="kpi-accent green"></span></div><div class="kpi-value" id="qualified">—</div><div class="kpi-note">不等于采购意向或销售合格</div></article>
+      <article class="kpi"><div class="kpi-top"><div class="kpi-label">台账标记有效对话</div><span class="kpi-accent green"></span></div><div class="kpi-value" id="qualified">—</div><div class="kpi-note">不等于采购意向或销售合格</div></article>
     </section>
     <section class="panel funnel-panel" aria-label="关系漏斗">
-      <div class="panel-head"><div><h2 class="panel-title">关系进展</h2><div class="panel-hint">把名单管理与对话转化分开，避免把“已保存”误认为“已进入销售流程”。</div></div><span class="result-count" id="poolSummary"></span></div>
+      <div class="panel-head"><div><h2 class="panel-title">关系进展</h2><div class="panel-hint">按当前台账显示已记录关系。账户级好友、待接受邀请和历史名单汇总保留各自原核查时间。</div></div><span class="result-count" id="poolSummary"></span></div>
       <div class="funnel" id="funnel"></div>
+    </section>
+
+    <section class="panel article-panel" id="articlePanel" aria-label="专栏文章浏览量分析">
+      <div class="panel-head"><div><h2 class="panel-title">专栏文章浏览量分析</h2><div class="panel-hint" id="articleCoverage">读取文章统计…</div></div><div class="article-controls"><input id="articleSearch" type="search" placeholder="搜索文章标题" aria-label="搜索文章标题"><select id="articleSort" aria-label="文章排序"><option value="newest">最新发布</option><option value="views">累计浏览量</option><option value="impressions">动态展示量</option></select></div></div>
+      <div class="article-summary" id="articleSummary"></div>
+      <div class="article-charts"><div class="article-chart-card"><h3>累计浏览量排名</h3><p class="chart-hint">发布时间不同；累计排名不等于同龄内容表现。</p><div id="articleRanking"></div></div><div class="article-chart-card"><h3>专栏近7天文章浏览</h3><p class="chart-hint">每日数据按UTC记录；与下表的单篇累计值分开统计。</p><div class="article-week-bars" id="articleWeeklyTrend" role="img" aria-label="专栏近7天文章浏览量趋势"></div><div class="article-muted" id="articleWeeklyNote"></div></div></div>
+      <div class="article-insight" id="articleInsight"></div>
+      <div class="table-wrap"><table class="article-table"><thead><tr><th>期数 / 文章</th><th>发布日期 / 篇龄</th><th>累计浏览</th><th>动态展示</th><th>较上次采集</th><th>采集时间</th></tr></thead><tbody id="articleTable"></tbody></table></div>
+      <div class="article-note" id="articleMethod"></div>
     </section>
     <section class="panel insights-panel" aria-label="客户结构与联系趋势">
       <div class="panel-head"><div><h2 class="panel-title">客户结构与联系趋势</h2><div class="panel-hint">来源、地区与每日互动均基于当前私有跟踪表中的已记录事实；未知项保留显示。</div></div><span class="result-count" id="insightCoverage"></span></div>
@@ -436,7 +488,7 @@
   <script>window.PUBLIC_DASHBOARD_ENCRYPTED = true;</script>
   <script>
     const state = { data:null, selected:null, selectedPersona:null, filter:'action', actionFilter:'all' };
-    const stageLabels = { monitoring:'观察中', invite_sent:'已发邀请', inmail_sent:'首封消息待回', connected:'已连接', replied:'已回复', qualified:'有效问题对话', demo:'Demo' };
+    const stageLabels = { monitoring:'观察中', invitation_pending:'邀请待接受', invite_sent:'已发邀请', inmail_sent:'首封消息待回', connected:'已连接', replied:'已回复', qualified:'有效问题对话', demo:'Demo' };
     const actionLabels = { reply_now:'需要回复', follow_up:'准备跟进', demo:'推进 Demo', waiting_response:'等待回复', waiting_acceptance:'等待接受', monitoring:'继续观察' };
     const actionRank = { reply_now:0, follow_up:1, demo:2, waiting_response:3, waiting_acceptance:4, monitoring:5 };
     const el = id => document.getElementById(id);
@@ -477,8 +529,8 @@
       if (lead.messaging?.replyRequired === false) return 'monitoring';
       if (['qualified','replied'].includes(lead.stage)) return 'waiting_response';
       if (lead.stage === 'inmail_sent') return 'waiting_response';
-      if (lead.stage === 'connected') return 'follow_up';
-      if (lead.stage === 'invite_sent') return lead.connectionStatus === 'pending' ? 'waiting_acceptance' : 'monitoring';
+      if (lead.stage === 'connected') return outbound > inbound ? 'waiting_response' : 'follow_up';
+      if (['invite_sent','invitation_pending'].includes(lead.stage)) return ['pending','邀请待接受'].includes(lead.connectionStatus) ? 'waiting_acceptance' : 'monitoring';
       return 'monitoring';
     };
     const channelLabel = lead => {
@@ -503,38 +555,35 @@
     function filteredLeads() {
       return state.data.leads.filter(lead => matchesInputs(lead) && matchesMainFilter(lead)).sort((first, second) => actionRank[actionState(first)] - actionRank[actionState(second)] || Date.parse(second.lastActivity) - Date.parse(first.lastActivity));
     }
+    const ledgerMetrics = () => {
+      const leads = state.data.leads;
+      const ids = new Set(leads.map(x => x.id));
+      const outbound = new Set((state.data.events || []).filter(e => e.direction === 'outbound' && ids.has(e.leadId)).map(e => e.leadId)).size;
+      const replies = new Set((state.data.events || []).filter(e => e.direction === 'inbound' && ['reply','message','message_reply','message_received','message_group_received','courtesy_acknowledgement'].includes(e.type) && ids.has(e.leadId)).map(e => e.leadId)).size;
+      return {total:leads.length,events:(state.data.events||[]).length,outbound,replies,pending:leads.filter(x=>['pending','邀请待接受'].includes(x.connectionStatus)).length,connected:leads.filter(x=>x.connectionStatus==='connected').length,qualified:leads.filter(x=>['qualified','demo'].includes(x.stage)).length,waiting:leads.filter(x=>['invite_sent','invitation_pending','inmail_sent'].includes(x.stage)).length,demo:leads.filter(x=>x.stage==='demo').length};
+    };
     function renderMetrics() {
-      const metrics = state.data.metrics;
-      const listMetrics = metrics.salesNavigatorLists || {};
-      el('readyToContact').textContent = listMetrics.readyToContact ?? '—';
-      el('contactedPeople').textContent = metrics.contactedPeople ?? '—';
-      el('pending').textContent = metrics.pendingCurrentObserved ?? '—';
-      el('accepted').textContent = metrics.connectedTrackedCurrentObserved ?? '—';
-      const documentedReplies = new Set((state.data.events || []).filter(event => event.direction === 'inbound' && ['reply','message','message_reply'].includes(event.type)).map(event => event.leadId)).size;
-      el('replies').textContent = documentedReplies;
-      el('qualified').textContent = metrics.qualified ?? '—';
-      el('acceptRateNote').textContent = `跟踪表 ${metrics.connectedTrackedCurrentObserved ?? '—'} 位 · 账号好友 ${metrics.account?.connections ?? '—'} 位`;
-      const staleReady = listMetrics.staleReadyToContactEntries || 0;
-      el('poolSummary').textContent = `GTM汇总快照 ${formatDate(metrics.snapshotAt)} · 已保存 ${metrics.savedLeads ?? '—'} 人 · 待首触 ${listMetrics.readyToContact ?? '—'} 人${staleReady ? ` · 旧名单待整理 ${staleReady} 人` : ''}`;
-      el('freshness').textContent = `记录修订于 ${formatDate(state.data.meta.lastUpdatedAt)} · 汇总快照 ${formatDate(metrics.snapshotAt)}`;
-      const checks = state.data.meta.channelChecks || {};
-      const channelsChecked = Boolean(checks.salesNavigator?.checkedAt && checks.linkedinMessaging?.checkedAt);
-      el('syncDetail').textContent = channelsChecked ? '两个消息渠道已增量核对；历史会话与GTM汇总尚未全量复核' : '消息渠道仍需复核';
+      const m = ledgerMetrics(), meta = state.data.meta, old = state.data.metrics;
+      el('readyToContact').textContent = m.total;
+      el('contactedPeople').textContent = m.outbound;
+      el('pending').textContent = m.pending;
+      el('accepted').textContent = m.connected;
+      el('replies').textContent = m.replies;
+      el('qualified').textContent = m.qualified;
+      el('acceptRateNote').textContent = '按明确的连接字段计数，不按回复阶段推定';
+      el('poolSummary').textContent = '当前台账 · 关系指标可能重叠，按各自定义读取';
+      el('freshness').textContent = `客户记录 ${formatDate(meta.customerDataUpdatedAt || meta.lastUpdatedAt)} · 文章统计 ${formatDate(meta.articleAnalyticsUpdatedAt)}`;
+      const checks = meta.channelChecks || {};
+      el('syncDetail').textContent = `消息核查：LinkedIn ${formatDate(checks.linkedinMessaging?.checkedAt)} · Sales Navigator ${formatDate(checks.salesNavigator?.checkedAt)}`;
       el('syncDot').classList.toggle('partial', true);
-      el('sourceNote').textContent = `${state.data.meta.source} · ${metrics.snapshotNote} · ${state.data.meta.updateNote}`;
+      el('ledgerCoverage').innerHTML = `<span><strong>${m.total}</strong> 位联系人</span><span><strong>${m.events}</strong> 条事件</span><span>台账修订 ${escapeHtml(formatDate(meta.lastUpdatedAt))}</span><span>账户 / 名单历史汇总 ${escapeHtml(formatDate(old.snapshotAt))}</span>`;
+      el('sourceNote').textContent = `${meta.source} · ${old.snapshotNote} · ${meta.updateNote}`;
     }
     function renderFunnel() {
-      const metrics = state.data.metrics;
-      const steps = [
-        ['已联系', metrics.contactedPeople || 0],
-        ['消息待回复', metrics.directMessagesAwaitingReplyObserved || 0],
-        ['已连接', metrics.connectedTrackedCurrentObserved || 0],
-        ['已记录回复', new Set((state.data.events || []).filter(event => event.direction === 'inbound' && ['reply','message','message_reply'].includes(event.type)).map(event => event.leadId)).size],
-        ['有效问题对话', metrics.qualified || 0],
-        ['Demo', metrics.demo?.booked || metrics.demos || 0]
-      ];
-      const maximum = Math.max(1, metrics.contactedPeople || 0);
-      el('funnel').innerHTML = steps.map(([label, value]) => `<article class="funnel-step"><div class="funnel-label">${escapeHtml(label)}</div><div class="funnel-value">${value}</div><div class="funnel-track" aria-hidden="true"><div class="funnel-fill" style="width:${Math.max(value ? 8 : 0, value / maximum * 100)}%"></div></div></article>`).join('');
+      const m = ledgerMetrics();
+      const steps = [['有外联记录',m.outbound],['首触待回应',m.waiting],['已连接（台账）',m.connected],['有私信入站记录',m.replies],['有效问题对话',m.qualified],['Demo阶段（台账）',m.demo]];
+      const maximum = Math.max(1, ...steps.map(x=>x[1]));
+      el('funnel').innerHTML = steps.map(([label,value]) => `<article class="funnel-step"><div class="funnel-label">${escapeHtml(label)}</div><div class="funnel-value">${value}</div><div class="funnel-track" aria-hidden="true"><div class="funnel-fill" style="width:${Math.max(value ? 8 : 0,value/maximum*100)}%"></div></div></article>`).join('');
     }
     function distributionRows(counts, total, palette) {
       const rows = Object.entries(counts).sort((first, second) => second[1] - first[1]);
@@ -556,7 +605,7 @@
         const invitations = outbound.filter(event => ['invite_sent','invitation_sent','connection_invitation'].includes(event.type)).length;
         const comments = outbound.filter(event => ['public_comment','public_comment_reply'].includes(event.type)).length;
         const messages = outbound.filter(event => ['message','message_sent','message_reply','inmail_sent'].includes(event.type)).length;
-        const replies = dayEvents.filter(event => event.direction === 'inbound' && ['reply','message','message_reply'].includes(event.type)).length;
+        const replies = dayEvents.filter(event => event.direction === 'inbound' && ['reply','message','message_reply','message_received','message_group_received','courtesy_acknowledgement'].includes(event.type)).length;
         const accepted = dayEvents.filter(event => event.direction === 'inbound' && ['connection_accepted','invitation_accepted'].includes(event.type)).length;
         return { day, invitations, messages, comments, replies, accepted, outbound:invitations + messages + comments };
       });
@@ -629,8 +678,8 @@
       const matching = state.data.leads.filter(matchesInputs).sort((first, second) => Date.parse(second.lastActivity) - Date.parse(first.lastActivity));
       const listMetrics = state.data.metrics.salesNavigatorLists || {};
       const lanes = [
-        { label:'待首轮接触', count:listMetrics.readyToContact ?? 0, aggregate:true, note:listMetrics.staleReadyToContactEntries ? `当前无未首触对象；Sales Navigator「01」仍有${listMetrics.staleReadyToContactEntries}条已接触记录待整理。` : `名单级统计。${listMetrics.readyToContact ?? '—'}位候选人的逐条档案保留在 Sales Navigator「01 Action - Ready to Contact」。` },
-        { label:'首触待回应', items:matching.filter(lead => ['invite_sent','inmail_sent'].includes(lead.stage)) },
+        { label:'观察 / 待补证', items:matching.filter(lead => lead.stage === 'monitoring') },
+        { label:'首触待回应', items:matching.filter(lead => ['invite_sent','invitation_pending','inmail_sent'].includes(lead.stage)) },
         { label:'已连接', items:matching.filter(lead => lead.stage === 'connected') },
         { label:'已回复 / 有效对话', items:matching.filter(lead => ['replied','qualified','demo'].includes(lead.stage)) }
       ];
@@ -688,7 +737,7 @@
       state.selected = lead.id;
       const events = leadEvents(lead);
       const timeline = events.length ? events.slice(0, 6).map(event => {
-        const eventLabel = ['connection_accepted','invitation_accepted','connection_status_observed'].includes(event.type) ? '关系状态' : event.type === 'public_comment_reply' ? '公开互动' : event.direction === 'inbound' && ['reply','message','message_reply'].includes(event.type) ? '对方私信回复' : event.direction === 'outbound' ? '我方动作' : '动态观察';
+        const eventLabel = ['connection_accepted','invitation_accepted','connection_status_observed'].includes(event.type) ? '关系状态' : event.type === 'public_comment_reply' ? '公开互动' : event.direction === 'inbound' && ['reply','message','message_reply','message_received','message_group_received','courtesy_acknowledgement'].includes(event.type) ? '对方私信回复' : event.direction === 'outbound' ? '我方动作' : '动态观察';
         return `<li><span class="timeline-time">${escapeHtml(formatDate(event.eventAt))} · ${escapeHtml(event.channel)} · ${eventLabel}</span>${escapeHtml(event.summary)}</li>`;
       }).join('') : `<li><span class="timeline-time">${escapeHtml(lead.lastActivity || '时间未核验')}</span>${escapeHtml(lead.status)}</li>`;
       const profile = lead.profileUrl ? `<a class="profile-link" href="${escapeHtml(lead.profileUrl)}" target="_blank" rel="noreferrer">打开 LinkedIn 资料</a>` : '';
@@ -697,9 +746,42 @@
       const evidenceTime = lead.lastCheckedAt || lead.triggerObservedAt || state.data.meta.lastUpdatedAt;
       el('detail').innerHTML = `<div class="detail-head"><div class="detail-kicker">Lead detail</div><h2 class="detail-name">${escapeHtml(lead.name)}</h2><div class="detail-company">${escapeHtml(lead.company)} · ${escapeHtml(lead.market)}<br>${escapeHtml(lead.persona)}</div><div class="detail-badges"><span class="stage-pill ${escapeHtml(lead.stage)}">${escapeHtml(stageLabels[lead.stage] || lead.stage)}</span><span class="action-state ${actionState(lead)}">${escapeHtml(actionLabels[actionState(lead)])}</span><span class="market-pill">${escapeHtml(lead.market)}</span></div>${profile}</div><div class="detail-body"><section class="detail-section"><div class="detail-label">沟通渠道</div><div class="channel-grid"><div class="channel-card"><div class="channel-card-label">连接邀请</div><div class="channel-card-value">${escapeHtml(lead.invitationChannel || '未核验')}</div></div><div class="channel-card"><div class="channel-card-label">会话渠道</div><div class="channel-card-value">${escapeHtml(conversationChannels)}</div></div><div class="channel-card"><div class="channel-card-label">连接状态</div><div class="channel-card-value">${escapeHtml(lead.connectionStatus || '尚未接触')}</div></div><div class="channel-card"><div class="channel-card-label">证据更新时间</div><div class="channel-card-value">${escapeHtml(formatDate(evidenceTime))}</div></div></div></section><section class="detail-section"><div class="detail-label">当前触发信号</div><p>${escapeHtml(lead.trigger)}</p><p>观察时间：${escapeHtml(formatDate(lead.triggerObservedAt))}</p></section><section class="detail-section"><div class="detail-label">建议沟通角度</div><p>${escapeHtml(lead.angle)}</p></section>${messaging}<section class="detail-section"><div class="detail-label">下一步</div><div class="next-step">${escapeHtml(lead.nextStep)}</div></section><section class="detail-section"><div class="detail-label">活动记录</div><ul class="timeline">${timeline}</ul></section></div>`;
     }
+
+    const articleSafeUrl = value => { try { const u = new URL(value); return u.protocol === 'https:' && (u.hostname === 'linkedin.com' || u.hostname.endsWith('.linkedin.com')) ? u.href : null; } catch {return null;} };
+    const articleNumber = value => value === null || value === undefined ? '未知' : Number(value).toLocaleString('zh-CN');
+    function renderArticles() {
+      const analytics = state.data.articleAnalytics, articles = analytics?.articles || [];
+      if (!articles.length) { el('articleCoverage').textContent='文章统计尚未采集'; el('articleTable').innerHTML='<tr><td colspan="6"><div class="empty">暂无已核验文章数据。</div></td></tr>'; return; }
+      const known = articles.filter(a=>Number.isFinite(a.articleViews)), values = known.map(a=>a.articleViews).sort((a,b)=>a-b), total = values.reduce((s,x)=>s+x,0);
+      const median = values.length ? (values[Math.floor((values.length-1)/2)]+values[Math.floor(values.length/2)])/2 : null;
+      const week = (analytics.newsletterSnapshots || []).find(x=>x.period==='past_7_days');
+      const year = (analytics.newsletterSnapshots || []).find(x=>x.period==='past_365_days');
+      el('articleCoverage').textContent = `${analytics.newsletter.title} · ${known.length}/${articles.length}篇已核实 · 采集于 ${formatDate(analytics.updatedAt)}`;
+      const summary = [['逐篇累计浏览',articleNumber(total),`${known.length}篇已知值之和，非独立读者`],['专栏近7天浏览',articleNumber(week?.articleViews),'平台近7天口径'],['单篇累计中位数',articleNumber(median),'发布时间不同，保留篇龄'],['专栏订阅者',articleNumber(analytics.newsletter.subscribers),'平台观察值']];
+      el('articleSummary').innerHTML = summary.map(([label,value,note])=>`<div class="article-summary-item"><div class="metric-label">${escapeHtml(label)}</div><strong>${escapeHtml(value)}</strong><small>${escapeHtml(note)}</small></div>`).join('');
+      const rank = [...known].sort((a,b)=>b.articleViews-a.articleViews || b.issueNumber-a.issueNumber), max = Math.max(1,...values);
+      el('articleRanking').innerHTML = rank.slice(0,5).map((a,i)=>`<div class="article-rank-row"><span class="article-rank-number">${String(i+1).padStart(2,'0')}</span><div><a href="${escapeHtml(articleSafeUrl(a.url)||'#')}" target="_blank" rel="noopener noreferrer" title="${escapeHtml(a.title)}">${escapeHtml(a.title)}</a><div class="article-rank-track"><div class="article-rank-fill" style="width:${a.articleViews/max*100}%"></div></div></div><span class="article-rank-value">${a.articleViews}</span></div>`).join('');
+      const days=week?.dailyViews || [], dayMax=Math.max(1,...days.map(x=>x.views));
+      el('articleWeeklyTrend').innerHTML = days.map(d=>`<div class="article-day" title="${escapeHtml(d.date)} UTC · ${d.views}次"><b>${d.views}</b><span class="bar" style="height:${Math.max(2,d.views/dayMax*125)}px"></span><span>${escapeHtml(d.date.slice(5).replace('-','/'))}</span></div>`).join('');
+      el('articleWeeklyTrend').setAttribute('aria-label',days.map(d=>`${d.date} UTC ${d.views}次浏览`).join('；'));
+      el('articleWeeklyNote').textContent = week ? `平台报告较前7天下降 ${Math.abs(week.viewsChangePercent)}% · 每日按UTC归档` : '暂无同口径周数据';
+      const newest=[...articles].sort((a,b)=>b.issueNumber-a.issueNumber)[0];
+      const topThree=rank.slice(0,3).reduce((sum,a)=>sum+a.articleViews,0);
+      el('articleInsight').textContent = `累计前三篇合计 ${topThree} 次，占逐篇浏览 ${total ? (topThree/total*100).toFixed(1) : '0'}%。最新第${newest.issueNumber}期在${newest.publishedDate}发布，目前${newest.articleViews}次；观察窗口还短。首次采集仅建立基线，后续同篇快照才能比较增量。`;
+      const query=el('articleSearch').value.trim().toLowerCase(), sort=el('articleSort').value;
+      const filtered=articles.filter(a=>!query || a.title.toLowerCase().includes(query) || String(a.issueNumber)===query).sort((a,b)=>sort==='views' ? (b.articleViews??-1)-(a.articleViews??-1) || b.issueNumber-a.issueNumber : sort==='impressions' ? (b.postImpressions??-1)-(a.postImpressions??-1) || b.issueNumber-a.issueNumber : b.issueNumber-a.issueNumber);
+      el('articleTable').innerHTML = filtered.length ? filtered.map(a=>{
+        const history=[...(a.observations||[])].filter(x=>x.observedAt<a.observedAt && Number.isFinite(x.articleViews)).sort((x,y)=>y.observedAt.localeCompare(x.observedAt));
+        const previous=history[0], delta=previous && Number.isFinite(a.articleViews) ? a.articleViews-previous.articleViews : null;
+        const age=a.publishedDate ? Math.max(0,Math.floor((Date.parse(analytics.collectionDate+'T00:00:00Z')-Date.parse(a.publishedDate+'T00:00:00Z'))/86400000)) : null;
+        return `<tr><td><div class="article-sub">第${a.issueNumber}期${age===0?'<span class="article-badge">新发布</span>':''}</div><a class="article-title" href="${escapeHtml(articleSafeUrl(a.url)||'#')}" target="_blank" rel="noopener noreferrer">${escapeHtml(a.title)}</a></td><td>${escapeHtml(a.publishedDate||'未知')}<div class="article-sub">${age===null?'篇龄未知':age===0?'当日发布':`已发布 ${age} 天`}</div></td><td><span class="article-count">${articleNumber(a.articleViews)}</span></td><td>${articleNumber(a.postImpressions)}</td><td>${delta===null?'<span class="article-muted">首次采集</span>':`${delta>0?'+':''}${delta}<div class="article-sub">上次 ${escapeHtml(formatDate(previous.observedAt))}</div>`}</td><td>${escapeHtml(formatDate(a.observedAt))}<div class="article-sub"><a href="${escapeHtml(articleSafeUrl(a.analyticsUrl)||'#')}" target="_blank" rel="noopener noreferrer">平台统计 ↗</a></div></td></tr>`;
+      }).join('') : '<tr><td colspan="6"><div class="empty">没有匹配文章。</div></td></tr>';
+      el('articleMethod').textContent = `${analytics.metricDefinitions.articleViews} ${analytics.metricDefinitions.postImpressions} 不将两者相除当作点击率或客户转化率。逐篇累计合计 ${total}，较早读取的专栏365天汇总 ${year?.articleViews ?? '未知'}；两次观测有刷新时差，保留原值。客户消息核查时间与本模块统计时间分开记录。`;
+    }
     function render() {
       renderMetrics();
       renderFunnel();
+      renderArticles();
       renderInsights();
       renderPersonas();
       renderPipeline();
@@ -715,6 +797,7 @@
       document.querySelectorAll('[data-filter]').forEach(item => { const active = item === button; item.classList.toggle('active', active); item.setAttribute('aria-pressed', String(active)); });
       renderActionSummary(); renderActionList(); renderTable(); renderDetail();
     }));
+    ['articleSearch','articleSort'].forEach(id=>el(id).addEventListener('input',renderArticles));
     const boot = data => { state.data = data; state.selected = data.leads.find(lead => actionState(lead) === 'reply_now')?.id || data.leads.find(lead => actionState(lead) === 'follow_up')?.id || data.leads[0]?.id; state.selectedPersona = data.profileAnalysis?.profiles?.sort((first, second) => second.score - first.score)[0]?.leadId || null; render(); };
     window.bootDashboard = boot;
     if (window.TRACKER_DATA) boot(window.TRACKER_DATA);
